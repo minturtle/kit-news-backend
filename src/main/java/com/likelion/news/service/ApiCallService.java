@@ -39,11 +39,11 @@ public class ApiCallService {
         conn.setRequestMethod(req.getRequestType().name());
 
         // 헤더 추가
-        appendHeader(req, conn);
+        appendHeader(req.getHeaders(), conn);
 
         // request body 추가
         if (req.getBody() != null) {
-            appendRequestBody(req, conn);
+            appendRequestBody(req.getBody(), conn);
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
@@ -62,8 +62,8 @@ public class ApiCallService {
         return resp;
     }
 
-    private void appendRequestBody(ApiServiceRequest req, HttpURLConnection conn) throws IOException {
-        String requestBody = new JSONObject(req.getBody()).toString();
+    private void appendRequestBody(Map<String, String>  reqBody, HttpURLConnection conn) throws IOException {
+        String requestBody = new JSONObject(reqBody).toString();
         conn.setDoOutput(true); // Enable writing to the connection's output stream
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = requestBody.getBytes("utf-8");
@@ -71,8 +71,7 @@ public class ApiCallService {
         }
     }
 
-    private void appendHeader(ApiServiceRequest req, HttpURLConnection conn) {
-        Map<String, String> headers = req.getHeaders();
+    private void appendHeader(Map<String, String> headers, HttpURLConnection conn) {
         for (Map.Entry<String, String> header : headers.entrySet()) {
             conn.setRequestProperty(header.getKey(), header.getValue());
         }

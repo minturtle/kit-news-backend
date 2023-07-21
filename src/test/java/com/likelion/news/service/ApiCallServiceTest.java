@@ -11,6 +11,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -28,11 +33,29 @@ public class ApiCallServiceTest {
         ObjectMapper objectMapper = (ObjectMapper)ReflectionTestUtils.getField(apiCallService, "objectMapper");
 
         //then
-
-
         assertThat(apiCallService).isNotNull();
         assertThat(objectMapper).isNotNull();
     }
+
+    @Test
+    @DisplayName("Conn객체에 HTTP Header를 주입할 수 있다.")
+    void t2() throws Exception {
+        //given
+        Map<String, String> testHeader = new HashMap<>();
+
+        testHeader.put("test", "1");
+        testHeader.put("test2", "2");
+
+        URL url = new URL("http://test123124214214.com");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        //when
+        ReflectionTestUtils.invokeMethod(apiCallService, "appendHeader", testHeader, conn);
+        //then
+        assertThat(conn.getRequestProperty("test")).isEqualTo("1");
+        assertThat(conn.getRequestProperty("test2")).isEqualTo("2");
+    }
+
+
     @TestConfiguration
     public static class TestConfig{
 
