@@ -33,6 +33,7 @@ public class ShellRunnerService {
      */
     private String proceedShellScript(String command, String ... args) throws IOException {
         String executeCommand = createExecuteCommand(command, args);
+
         Process process = Runtime.getRuntime().exec(executeCommand);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -55,7 +56,11 @@ public class ShellRunnerService {
     * @param args 쉘 스크립트 명령어에 대한 Arguments
     * @return 완성된 쉘 스크립트 명령어
      */
-    private String createExecuteCommand(String command, String[] args) {
+    private String createExecuteCommand(String command, String ... args) {
+        if(args == null || args.length == 0){
+            return command;
+        }
+
         StringBuilder executeCommandBuilder = new StringBuilder(command);
 
         for(String arg : args){

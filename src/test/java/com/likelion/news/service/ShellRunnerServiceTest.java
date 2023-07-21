@@ -38,6 +38,17 @@ class ShellRunnerServiceTest {
         assertThat(result).isEqualTo("echo hello world");
     }
 
+    @Test
+    @DisplayName("command만을 받아 실제 실행하는 명령어를 만들 수 있다.")
+    void t3() throws Exception {
+        //given
+        String testCommand = "echo";
+        //when
+        String result = (String)(ReflectionTestUtils
+                .invokeMethod(shellRunnerService, "createExecuteCommand", testCommand, null));
 
+        //then
+        assertThat(result).isEqualTo("echo");
+    }
 
 }
