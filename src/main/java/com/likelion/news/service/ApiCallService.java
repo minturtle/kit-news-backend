@@ -43,7 +43,7 @@ public class ApiCallService {
 
         // request body 추가
         if (req.getBody() != null) {
-            appendRequestBody(req.getBody(), conn);
+            sendRequestBody(req.getBody(), conn);
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
@@ -62,12 +62,14 @@ public class ApiCallService {
         return resp;
     }
 
-    private void appendRequestBody(Map<String, String>  reqBody, HttpURLConnection conn) throws IOException {
+    private void sendRequestBody(Map<String, String>  reqBody, HttpURLConnection conn) throws IOException {
         String requestBody = new JSONObject(reqBody).toString();
         conn.setDoOutput(true); // Enable writing to the connection's output stream
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = requestBody.getBytes("utf-8");
             os.write(input, 0, input.length);
+        }catch (Exception e){
+            throw new InternalServerException("API 서버와 통신 중 오류가 발생했습니다.", e);
         }
     }
 
