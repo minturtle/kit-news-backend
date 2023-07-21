@@ -16,7 +16,7 @@ public class ShellRunnerService {
             return proceedShellScript(command, args);
         }catch (IOException e){
             log.error("Execute Shell Failed");
-
+            e.printStackTrace();
             // TODO Exception Throw로 바꿔줘야함.
             return null;
         }
@@ -41,7 +41,10 @@ public class ShellRunnerService {
         String line;
         while ((line = in.readLine()) != null) {
             processResultBuilder.append(line);
-            processResultBuilder.append("\n");
+            if(in.ready()){
+                processResultBuilder.append("\n");
+            }
+
         }
         return processResultBuilder.toString();
     }
