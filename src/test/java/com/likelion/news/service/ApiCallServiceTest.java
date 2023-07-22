@@ -3,11 +3,11 @@ package com.likelion.news.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.news.dto.ApiServiceRequest;
 import com.likelion.news.dto.ApiServiceResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
@@ -28,8 +29,6 @@ import static org.mockserver.model.HttpResponse.response;
 
 @Import(ApiCallServiceTest.TestConfig.class)
 @ExtendWith(SpringExtension.class)
-
-
 public class ApiCallServiceTest {
 
     @Autowired
@@ -38,7 +37,7 @@ public class ApiCallServiceTest {
     @BeforeEach
     void setUp() {
         mockServer = ClientAndServer.startClientAndServer(8888);
-        new MockServerClient("localhost", 8888)
+        mockServer
                 .when(
                         request()
                                 .withMethod("POST")
@@ -52,6 +51,12 @@ public class ApiCallServiceTest {
                                 .withHeader(new Header("Content-Type", "text/xml;charset=utf-8"))
                                 .withBody("{ \"test\" : \"good\"}")
                 );
+    }
+
+
+    @AfterEach
+    void tearDown() {
+        mockServer.stop();
     }
 
     @Test
@@ -91,7 +96,7 @@ public class ApiCallServiceTest {
 
 
         Map<String, String> testHeader = new HashMap<>();
-        Map<String, String> testBody = new HashMap<>();
+        Map<String, String> testBody = new TreeMap<>();
 
         testHeader.put("test", "test-header");
 

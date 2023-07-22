@@ -74,8 +74,8 @@ public class ApiCallService {
         return resp;
     }
 
-    private void sendRequestBody(Map<String, String>  reqBody, HttpURLConnection conn) throws IOException {
-        String requestBody = new JSONObject(reqBody).toString();
+    private void sendRequestBody(Object reqBody, HttpURLConnection conn) throws IOException {
+        String requestBody = objectMapper.writeValueAsString(reqBody);
         conn.setDoOutput(true); // Enable writing to the connection's output stream
         try (OutputStream os = conn.getOutputStream()) {
             byte[] input = requestBody.getBytes("utf-8");

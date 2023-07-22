@@ -1,5 +1,6 @@
 package com.likelion.news.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

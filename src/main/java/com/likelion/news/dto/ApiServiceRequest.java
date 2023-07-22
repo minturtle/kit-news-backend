@@ -15,7 +15,7 @@ public class ApiServiceRequest{
     private RequestType requestType;
     private Map<String, String> headers;
     private String url;
-    private Map<String, String> body;
+    private Object body;
 
     public static enum RequestType{
         GET, POST, PUT, PATCH, DELETE
