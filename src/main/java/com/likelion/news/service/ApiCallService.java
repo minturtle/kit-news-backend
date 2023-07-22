@@ -23,6 +23,16 @@ public class ApiCallService {
 
     private final ObjectMapper objectMapper;
 
+
+    /**
+    * @methodName callApi
+    * @Author : Minseok Kim
+    * @description Http Request를 전송하고 결과를 객체로 반환하는 메서드
+    *
+    * @param req Http Request 정보가 담긴 객체
+    * @return Api 결과값(상태 코드, Body)등이 담긴 객체
+    * @exception InternalServerException API 호출중 오류가 발생한 경우
+     */
     public<T> ApiServiceResponse<T> callApi(ApiServiceRequest req, Class<T> responseBodyMappingClass) {
         try {
             return callApiProcess(req, responseBodyMappingClass);

@@ -84,7 +84,7 @@ public class ApiCallServiceTest {
 
 
     @Test
-    @DisplayName("Http Request를 전송할 수 있다.")
+    @DisplayName("Http Request를 전송해 응답을 객체로 변환할 수 있다.")
     void t3() throws Exception {
         //given
 
