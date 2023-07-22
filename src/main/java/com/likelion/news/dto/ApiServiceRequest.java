@@ -1,6 +1,5 @@
 package com.likelion.news.dto;
 
-import com.likelion.news.service.ApiCallService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
