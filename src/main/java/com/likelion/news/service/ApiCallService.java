@@ -2,6 +2,8 @@ package com.likelion.news.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.likelion.news.dto.ApiServiceRequest;
+import com.likelion.news.dto.ApiServiceResponse;
 import com.likelion.news.exception.InternalServerException;
 import lombok.*;
 import net.minidev.json.JSONObject;
@@ -90,29 +92,8 @@ public class ApiCallService {
     }
 
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Data
-    public static class ApiServiceRequest{
-        private RequestType requestType;
-        private Map<String, String> headers;
-        private String url;
-        private Map<String, String> body;
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Data
-    public static class ApiServiceResponse<T>{
-        private Integer statusCode;
-        private T body;
-    }
 
 
-    public static enum RequestType{
-        GET, POST, PUT, PATCH, DELETE
-    }
+
 }
 

@@ -1,6 +1,8 @@
 package com.likelion.news.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.likelion.news.dto.ApiServiceRequest;
+import com.likelion.news.dto.ApiServiceResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,16 +100,16 @@ public class ApiCallServiceTest {
         testBody.put("test2", "2");
 
 
-        ApiCallService.ApiServiceRequest req = ApiCallService.ApiServiceRequest.builder()
+        ApiServiceRequest req = ApiServiceRequest.builder()
                 .url("http://localhost:8888/test")
                 .headers(testHeader)
-                .requestType(ApiCallService.RequestType.POST)
+                .requestType(ApiServiceRequest.RequestType.POST)
                 .body(testBody)
                 .build();
 
 
         //when
-        ApiCallService.ApiServiceResponse<TestResponse> resp = apiCallService.callApi(req, TestResponse.class);
+        ApiServiceResponse<TestResponse> resp = apiCallService.callApi(req, TestResponse.class);
 
         //then
 
