@@ -24,6 +24,8 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 
+
+// TODO : CLOVA에서 400, 500 오류가 발생할 때에 대한 테스트 케이스 작성 필요
 @SpringBootTest(classes = {ClovaSummaryApiCallService.class, ApiCallService.class, ObjectMapper.class})
 @ExtendWith(SpringExtension.class)
 class ClovaSummaryApiCallServiceTest {
