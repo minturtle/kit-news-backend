@@ -15,3 +15,11 @@ clova:
   client:
     id: ${clova.client.id}
     secret: ${clova.client.secret}
+  summary:
+    size: 5
+
+crawler:
+  shell:
+    execute-command: python
+    args:
+      test.py
