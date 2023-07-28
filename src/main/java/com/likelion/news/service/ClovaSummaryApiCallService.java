@@ -56,5 +56,24 @@ public class ClovaSummaryApiCallService {
         return resp.getBody().getSummary();
     }
 
+    public ClovaSummaryRequest createDefaultNewsRequest(String title, String content) {
+        ClovaSummaryRequest.ClovaRequestOption option = ClovaSummaryRequest.ClovaRequestOption.builder()
+                .language(ClovaSummaryRequest.ClovaRequestOptionLanguage.KOREAN.getValue())
+                .summaryCount(2)
+                .tone(ClovaSummaryRequest.ClovaRequestOptionTone.원문_어투_유지.getValue())
+                .model(ClovaSummaryRequest.ClovaRequestOptionModel.NEWS.getValue())
+                .build();
+
+        ClovaSummaryRequest.ClovaRequestDocument document = ClovaSummaryRequest.ClovaRequestDocument.builder()
+                .title(title)
+                .content(content)
+                .build();
+
+        ClovaSummaryRequest summaryReq = ClovaSummaryRequest.builder()
+                .document(document)
+                .option(option)
+                .build();
+        return summaryReq;
+    }
 
 }

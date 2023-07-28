@@ -1,10 +1,8 @@
 package com.likelion.news.entity;
 
+import com.likelion.news.entity.enums.ArticleCategory;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,12 +11,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Table(name = "crawled_news")
+@Getter
 public class CrawledNews {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long crawledNewsId;
     private LocalDateTime articleDatetime;
-    private String articleCategory;
+
+    @Enumerated(EnumType.STRING)
+    private ArticleCategory articleCategory;
     private String media;
     private String articleTitle;
     private String articleContent;
