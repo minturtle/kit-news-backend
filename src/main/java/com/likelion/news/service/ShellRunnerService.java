@@ -11,6 +11,15 @@ import java.io.InputStreamReader;
 @Slf4j
 public class ShellRunnerService {
 
+    /**
+     * @methodName proceedShellScript
+     * Author : Minseok Kim
+     * @description 쉘 명령어를 수행하는 메서드
+     *
+     * @param command 쉘 명령어
+     * @return 쉘이 stdout한 문자열
+     * @exception IOException Shell 명령어 실행에 실패했을 경우
+     */
     public String executeShell(String command, String ... args){
         try{
             return proceedShellScript(command, args);
@@ -22,15 +31,6 @@ public class ShellRunnerService {
         }
     }
 
-    /**
-    * @methodName proceedShellScrip
-    * Author : Minseok Kim
-    * @description 쉘 명령어를 수행하는 메서드
-    *
-    * @param command 쉘 명령어
-    * @return 쉘이 stdout한 문자열
-    * @exception IOException Shell 명령어 실행에 실패했을 경우
-     */
     private String proceedShellScript(String command, String ... args) throws IOException {
         String executeCommand = createExecuteCommand(command, args);
 
