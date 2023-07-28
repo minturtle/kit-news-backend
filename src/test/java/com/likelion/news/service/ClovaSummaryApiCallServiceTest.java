@@ -42,24 +42,7 @@ class ClovaSummaryApiCallServiceTest {
     @BeforeEach
     void setUp() throws JsonProcessingException {
         mockServer = ClientAndServer.startClientAndServer(8888);
-        mockServer.when(
-                request()
-                        .withMethod("POST")
-                        .withPath("/text-summary/v1/summarize")
-                        .withHeaders(
-                                Header.header("X-NCP-APIGW-API-KEY-ID", "test-id"),
-                                Header.header("X-NCP-APIGW-API-KEY", "test-secret"),
-                                Header.header("Content-Type", "application/json")
-                        )
-                        .withBody(objectMapper.writeValueAsString(createSummaryRequest()))
 
-                )
-                .respond(
-                        response()
-                                .withStatusCode(200)
-                                .withHeader(new Header("Content-Type", "application/json;charset=utf-8"))
-                                .withBody("{ \"summary\" : \"good\"}")
-                );
     }
 
 
@@ -87,6 +70,26 @@ class ClovaSummaryApiCallServiceTest {
     @DisplayName("Clova로 부터 요약하고자 하는 문서를 Http Request에 받아서 전송하고, 요약문을 응답 받을 수 있다.")
     void t2() throws Exception {
         //given
+        mockServer.when(
+                        request()
+                                .withMethod("POST")
+                                .withPath("/text-summary/v1/summarize")
+                                .withHeaders(
+                                        Header.header("X-NCP-APIGW-API-KEY-ID", "test-id"),
+                                        Header.header("X-NCP-APIGW-API-KEY", "test-secret"),
+                                        Header.header("Content-Type", "application/json")
+                                )
+                                .withBody(objectMapper.writeValueAsString(createSummaryRequest()))
+
+                )
+                .respond(
+                        response()
+                                .withStatusCode(200)
+                                .withHeader(new Header("Content-Type", "application/json;charset=utf-8"))
+                                .withBody("{ \"summary\" : \"good\"}")
+                );
+
+
         when(environment.getProperty("clova.url")).thenReturn("http://localhost:8888/text-summary/v1/summarize");
         when(environment.getProperty("clova.client.id")).thenReturn("test-id");
         when(environment.getProperty("clova.client.secret")).thenReturn("test-secret");
@@ -122,4 +125,5 @@ class ClovaSummaryApiCallServiceTest {
                 .build();
         return summaryReq;
     }
+
 }
