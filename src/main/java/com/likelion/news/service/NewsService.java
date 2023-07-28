@@ -2,12 +2,14 @@ package com.likelion.news.service;
 
 
 import com.likelion.news.dto.RefinedNewsContentDto;
+import com.likelion.news.dto.RefinedNewsReadDto;
 import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.RefinedNews;
 import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.repository.CrawledNewsRepository;
 import com.likelion.news.repository.RefinedNewsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +24,12 @@ public class NewsService {
     private final CrawledNewsRepository crawledNewsRepository;
     private final RefinedNewsRepository refinedNewsRepository;
 
-    
+
+
+    public List<RefinedNewsReadDto> getNewsByCategory(Pageable pageable, ArticleCategory category){
+        return List.of();
+    }
+
     /**
     * @methodName getRandomNews
     * @author : Minseok Kim
