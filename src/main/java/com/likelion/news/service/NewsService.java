@@ -9,8 +9,9 @@ import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.repository.CrawledNewsRepository;
 import com.likelion.news.repository.RefinedNewsRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NewsService {
 
     private final CrawledNewsRepository crawledNewsRepository;
@@ -26,8 +28,11 @@ public class NewsService {
 
 
 
-    public List<RefinedNewsReadDto> getNewsByCategory(Pageable pageable, ArticleCategory category){
-        return List.of();
+    public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
+        List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size));
+
+        return findNewsList.stream().map(RefinedNewsReadDto::toDto).toList();
+
     }
 
     /**
@@ -75,6 +80,7 @@ public class NewsService {
     *
     * @param  dtoList 저장하려는 refinedNews의 정보가 담긴 DTO List
      */
+    @Transactional
     public void saveRefinedNewsList(List<RefinedNewsContentDto> dtoList){
         List<RefinedNews> refinedNewsList = dtoList.stream().map(RefinedNewsContentDto::toEntity).toList();
 

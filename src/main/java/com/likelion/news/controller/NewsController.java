@@ -25,7 +25,7 @@ public class NewsController {
     @GetMapping("/list")
     public ApiResponse<List<NewsResponse>> getNewsList(@RequestBody @Valid NewsRequest reqBody){
 
-        List<NewsResponse> result = newsService.getNewsByCategory(PageRequest.of(reqBody.getFrom(), reqBody.getSize()), reqBody.getCategory())
+        List<NewsResponse> result = newsService.getNewsByCategory(reqBody.getFrom(), reqBody.getSize(), reqBody.getCategory())
                 .stream().map(news -> NewsResponse.builder()
                         .link(news.getLink())
                         .title(news.getTitle())

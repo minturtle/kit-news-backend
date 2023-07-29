@@ -3,15 +3,13 @@ package com.likelion.news.entity;
 
 import com.likelion.news.entity.enums.NewsEmotionType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Getter
 @Table(name = "news_emotions")
 public class NewsEmotion {
     @Id
