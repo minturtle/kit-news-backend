@@ -3,18 +3,10 @@ package com.likelion.news.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.NewsResponse;
-import com.likelion.news.entity.CrawledNews;
-import com.likelion.news.entity.NewsEmotion;
-import com.likelion.news.entity.RefinedNews;
-import com.likelion.news.entity.User;
-import com.likelion.news.entity.enums.ArticleCategory;
-import com.likelion.news.entity.enums.LoginType;
-import com.likelion.news.entity.enums.NewsEmotionType;
-import com.likelion.news.entity.enums.UserType;
-import com.likelion.news.repository.CrawledNewsRepository;
-import com.likelion.news.repository.NewsEmotionRepository;
-import com.likelion.news.repository.RefinedNewsRepository;
-import com.likelion.news.repository.UserRepository;
+import com.likelion.news.entity.*;
+import com.likelion.news.entity.enums.*;
+import com.likelion.news.repository.*;
+import org.antlr.v4.runtime.misc.LogManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -53,13 +46,20 @@ class NewsControllerIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private CommentEmotionRepository commentEmotionRepository;
+
+
+    private User testExpert;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
 
     @AfterEach
     void tearDown() {
-        newsEmotionRepository.deleteAll();
-        refinedNewsRepository.deleteAll();
         crawledNewsRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -70,6 +70,12 @@ class NewsControllerIntegrationTest {
         //given
         setUpData();
 
+        NewsResponse.CommentResponse expectedCommentResp = NewsResponse.CommentResponse.builder()
+                .expertUid(testExpert.getUid())
+                .expertName(testExpert.getName())
+                .content("금오공대 ㅇㅈ합니다.")
+                .emotionCounts(Map.of(CommentEmotionType.LIKE, 1))
+                .build();
         NewsResponse expectedRespData = NewsResponse.builder()
                 .link("http://test-new.org")
                 .articleCategory(ArticleCategory.IT_SCIENCE)
@@ -79,6 +85,7 @@ class NewsControllerIntegrationTest {
                 .emotionCounts(Map.<NewsEmotionType, Integer>of(
                         NewsEmotionType.LIKE, 2,
                         NewsEmotionType.DISLIKE, 1))
+                .comments(List.of(expectedCommentResp))
                 .build();
 
         ApiResponse<List<NewsResponse>> expectedRespBody = ApiResponse.<List<NewsResponse>>builder()
@@ -117,7 +124,7 @@ class NewsControllerIntegrationTest {
 
     }
     private void setUpData() {
-        User testAdmin = User.builder()
+        testExpert = User.builder()
                 .name("testUser1")
                 .kakaoUid(21234L)
                 .uid("abc")
@@ -155,7 +162,7 @@ class NewsControllerIntegrationTest {
         NewsEmotion newsEmotion1 = NewsEmotion.builder()
                 .refinedNews(refinedNews)
                 .emotionType(NewsEmotionType.LIKE)
-                .user(testAdmin)
+                .user(testExpert)
                 .build();
         NewsEmotion newsEmotion2 = NewsEmotion.builder()
                 .refinedNews(refinedNews)
@@ -168,10 +175,23 @@ class NewsControllerIntegrationTest {
                 .user(testUser3)
                 .build();
 
-        userRepository.saveAll(List.of(testAdmin, testUser2, testUser3));
+        Comment testComment = Comment.builder()
+                .refinedNews(refinedNews)
+                .user(testExpert)
+                .content("금오공대 ㅇㅈ합니다.").build();
+
+        CommentEmotion testCommentEmotion = CommentEmotion.builder()
+                .user(testUser2)
+                .comment(testComment)
+                .emotionType(CommentEmotionType.LIKE)
+                .build();
+
+        userRepository.saveAll(List.of(testExpert, testUser2, testUser3));
         crawledNewsRepository.save(crawledNews);
         refinedNewsRepository.save(refinedNews);
         newsEmotionRepository.saveAll(List.of(newsEmotion1, newsEmotion2, newsEmotion3));
+        commentRepository.save(testComment);
+        commentEmotionRepository.save(testCommentEmotion);
     }
 
 

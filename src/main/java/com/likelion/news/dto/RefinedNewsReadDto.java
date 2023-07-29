@@ -1,5 +1,6 @@
 package com.likelion.news.dto;
 
+import com.likelion.news.entity.Comment;
 import com.likelion.news.entity.NewsEmotion;
 import com.likelion.news.entity.RefinedNews;
 import com.likelion.news.entity.enums.ArticleCategory;
@@ -7,6 +8,7 @@ import com.likelion.news.entity.enums.NewsEmotionType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,8 @@ public class RefinedNewsReadDto {
     @Builder.Default
     private Map<NewsEmotionType, Integer> emotionCounts = new HashMap<>();
 
+    @Builder.Default
+    private List<CommentDto> comments = new ArrayList<>();
 
 
     public static RefinedNewsReadDto toDto(RefinedNews entity){
@@ -48,6 +52,18 @@ public class RefinedNewsReadDto {
             Integer prevCount = emotionCountMap.get(emotionType);
             emotionCountMap.put(emotionType, prevCount + 1);
 
+        }
+
+        //Comment to DTO
+        for(Comment comment : entity.getComments()){
+            CommentDto commentDto = CommentDto.builder()
+                    .expertUid(comment.getUser().getUid())
+                    .expertName(comment.getUser().getName())
+                    .expertProfileImage(comment.getUser().getProfileImage())
+                    .commentEmotions(comment.getCommentEmotions().stream().map(CommentDto.CommentEmotionDto::toDto).toList())
+                    .content(comment.getContent())
+                    .build();
+            dto.getComments().add(commentDto);
         }
 
         return dto;

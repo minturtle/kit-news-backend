@@ -27,14 +27,21 @@ public class NewsController {
     ){
 
         List<NewsResponse> result = newsService.getNewsByCategory(from, size, category)
-                .stream().map(news -> NewsResponse.builder()
-                        .link(news.getLink())
-                        .title(news.getTitle())
-                        .content(news.getContent())
-                        .summary(news.getSummary())
-                        .articleCategory(news.getArticleCategory())
-                        .emotionCounts(news.getEmotionCounts())
-                        .build()).toList();
+                .stream().map(news ->{
+                    List<NewsResponse.CommentResponse> comments = news.getComments().stream().map(NewsResponse.CommentResponse::of).toList();
+
+
+                    return NewsResponse.builder()
+                            .link(news.getLink())
+                            .title(news.getTitle())
+                            .content(news.getContent())
+                            .summary(news.getSummary())
+                            .articleCategory(news.getArticleCategory())
+                            .emotionCounts(news.getEmotionCounts())
+                            .comments(comments)
+                            .build();
+
+                }).toList();
 
 
         return ApiResponse.<List<NewsResponse>>builder()

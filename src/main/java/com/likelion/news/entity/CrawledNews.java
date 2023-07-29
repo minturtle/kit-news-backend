@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,5 +27,8 @@ public class CrawledNews {
     private String articleTitle;
     private String articleContent;
     private String articleLink;
+
+    @OneToMany(mappedBy = "crawledNews", cascade = CascadeType.REMOVE)
+    private List<RefinedNews> refinedNewsList;
 
 }

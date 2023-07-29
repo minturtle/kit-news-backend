@@ -17,19 +17,19 @@ public class RefinedNews {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long refinedNewsId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crawled_news_id")
     private CrawledNews crawledNews;
 
     private String articleSummary;
 
-    @OneToMany(mappedBy = "refinedNews")
+    @OneToMany(mappedBy = "refinedNews", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<NewsEmotion> emotions = new ArrayList<>();
 
 
 
-    @OneToMany(mappedBy = "refinedNews")
+    @OneToMany(mappedBy = "refinedNews", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 

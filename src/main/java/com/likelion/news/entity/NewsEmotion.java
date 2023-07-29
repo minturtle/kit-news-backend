@@ -16,7 +16,8 @@ public class NewsEmotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long newsEmotionId;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "refined_news_id")
     private RefinedNews refinedNews;
 
