@@ -17,7 +17,7 @@ public class RefinedNewsReadDto {
     private String summary;
     private String link;
     private ArticleCategory articleCategory;
-    private List<EmotionCount> newsEmotions;
+    private List<EmotionCount> emotionCounts;
 
     @Data
     @Builder

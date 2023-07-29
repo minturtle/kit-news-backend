@@ -1,7 +1,6 @@
 package com.likelion.news.controller;
 
 
-import com.likelion.news.dto.RefinedNewsReadDto;
 import com.likelion.news.dto.request.NewsRequest;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.NewsResponse;
@@ -25,6 +24,7 @@ public class NewsController {
 
     @GetMapping("/list")
     public ApiResponse<List<NewsResponse>> getNewsList(@RequestBody @Valid NewsRequest reqBody){
+
         List<NewsResponse> result = newsService.getNewsByCategory(PageRequest.of(reqBody.getFrom(), reqBody.getSize()), reqBody.getCategory())
                 .stream().map(news -> NewsResponse.builder()
                         .link(news.getLink())
@@ -32,6 +32,7 @@ public class NewsController {
                         .content(news.getContent())
                         .summary(news.getSummary())
                         .articleCategory(news.getArticleCategory())
+                        .emotionCounts(news.getEmotionCounts())
                         .build()).toList();
 
 
