@@ -3,6 +3,7 @@ package com.likelion.news.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.CommentResponse;
+import com.likelion.news.dto.response.NewsEmotionResponse;
 import com.likelion.news.dto.response.NewsResponse;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.*;
@@ -80,7 +81,6 @@ class NewsControllerIntegrationTest {
                 .title("테스트 뉴스 제목입니다.")
                 .content("테스트 뉴스 본문입니다.")
                 .summary("테스트 뉴스 요약본입니다.")
-                .emotionCounts(Map.of(NewsEmotionType.LIKE, 2, NewsEmotionType.DISLIKE, 1))
                 .build();
 
         ApiResponse<List<NewsResponse>> expectedRespBody = ApiResponse.<List<NewsResponse>>builder()
@@ -121,20 +121,56 @@ class NewsControllerIntegrationTest {
 
 
     @Test
-    @DisplayName("newsId에 해당하는 comment를 조회할 수 있다.")
+    @DisplayName("newsId에 해당하는 comment를 조회하고, 사용자가 Comment에 감정표현을 눌렀는지를 알 수 있다.")
     void t3() throws Exception {
         //given
+        setUpData();
+
         CommentResponse expectedCommentResp = CommentResponse.builder()
                 .expertUid(testExpert.getUid())
                 .expertName(testExpert.getName())
                 .content("금오공대 ㅇㅈ합니다.")
                 .emotionCounts(Map.of(CommentEmotionType.LIKE, 1))
                 .build();
-        //when
 
-        //then
+
+        ApiResponse<List<CommentResponse>> expectedRespBody = ApiResponse.<List<CommentResponse>>builder()
+                .data(List.of(expectedCommentResp)).build();
+        //when & then
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/news/comment")
+                        .param("newsId", String.valueOf(refinedNews.getRefinedNewsId()))
+        )
+        .andDo(print())
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(expectedRespBody)));
 
     }
+
+    @Test
+    @DisplayName("News ID를 사용해 뉴스 감정표현의 갯수와 사용자가 감정표현을 눌렀는지를 알 수 있다.")
+    void t4() throws Exception {
+        //given
+        setUpData();
+
+        NewsEmotionResponse expectedEmotionResp = NewsEmotionResponse.builder()
+                .build();
+
+        ApiResponse<List<NewsEmotionResponse>> expectedRespBody = ApiResponse.<List<NewsEmotionResponse>>builder()
+                .data(List.of(expectedEmotionResp)).build();
+        //when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/news/emotions")
+                                .param("newsId", String.valueOf(refinedNews.getRefinedNewsId()))
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(expectedRespBody)));
+
+
+    }
+
+
     private void setUpData() {
         testExpert = User.builder()
                 .name("testUser1")

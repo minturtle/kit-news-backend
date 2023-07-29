@@ -1,11 +1,14 @@
 package com.likelion.news.service;
 
 
+import com.likelion.news.dto.CommentDto;
 import com.likelion.news.dto.RefinedNewsContentDto;
 import com.likelion.news.dto.RefinedNewsReadDto;
+import com.likelion.news.entity.Comment;
 import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.RefinedNews;
 import com.likelion.news.entity.enums.ArticleCategory;
+import com.likelion.news.repository.CommentRepository;
 import com.likelion.news.repository.CrawledNewsRepository;
 import com.likelion.news.repository.RefinedNewsRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +29,7 @@ public class NewsService {
 
     private final CrawledNewsRepository crawledNewsRepository;
     private final RefinedNewsRepository refinedNewsRepository;
-
+    private final CommentRepository commentRepository;
 
 
     public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
@@ -105,5 +108,12 @@ public class NewsService {
             randomNumbers.add(randomNumber);
         }
         return randomNumbers;
+    }
+
+    public List<CommentDto> getCommentByNewsId(Long newsId) {
+        List<Comment> comments = commentRepository.findCommentsByNewsId(newsId);
+
+
+        return comments.stream().map(CommentDto::toDto).toList();
     }
 }

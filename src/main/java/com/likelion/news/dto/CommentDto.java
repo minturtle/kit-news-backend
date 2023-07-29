@@ -1,6 +1,8 @@
 package com.likelion.news.dto;
 
+import com.likelion.news.entity.Comment;
 import com.likelion.news.entity.CommentEmotion;
+import com.likelion.news.entity.User;
 import com.likelion.news.entity.enums.CommentEmotionType;
 import lombok.*;
 
@@ -21,6 +23,18 @@ public class CommentDto {
     private List<CommentEmotionDto> commentEmotions;
 
     private String content;
+
+    public static CommentDto toDto(Comment entity){
+
+        User expert = entity.getUser();
+        return CommentDto.builder()
+                .expertUid(expert.getUid())
+                .expertProfileImage(expert.getProfileImage())
+                .expertName(expert.getName())
+                .content(entity.getContent())
+                .commentEmotions(entity.getCommentEmotions().stream().map(CommentEmotionDto::toDto).toList())
+                .build();
+    }
 
     @Builder
     @Getter
