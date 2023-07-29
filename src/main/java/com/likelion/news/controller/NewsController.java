@@ -1,17 +1,14 @@
 package com.likelion.news.controller;
 
 
-import com.likelion.news.dto.request.NewsRequest;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.NewsResponse;
+import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.service.NewsService;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,9 +20,13 @@ public class NewsController {
     private final NewsService newsService;
 
     @GetMapping("/list")
-    public ApiResponse<List<NewsResponse>> getNewsList(@RequestBody @Valid NewsRequest reqBody){
+    public ApiResponse<List<NewsResponse>> getNewsList(
+            @RequestParam @NotNull @Positive Integer from,
+            @RequestParam @NotNull @Positive Integer size,
+            @RequestParam @NotNull ArticleCategory category
+    ){
 
-        List<NewsResponse> result = newsService.getNewsByCategory(reqBody.getFrom(), reqBody.getSize(), reqBody.getCategory())
+        List<NewsResponse> result = newsService.getNewsByCategory(from, size, category)
                 .stream().map(news -> NewsResponse.builder()
                         .link(news.getLink())
                         .title(news.getTitle())

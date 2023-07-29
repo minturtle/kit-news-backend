@@ -16,7 +16,9 @@ public class CrawledNews {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long crawledNewsId;
-    private LocalDateTime articleDatetime;
+
+    @Builder.Default
+    private LocalDateTime articleDatetime = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private ArticleCategory articleCategory;

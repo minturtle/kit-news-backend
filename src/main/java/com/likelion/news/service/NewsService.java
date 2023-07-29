@@ -10,6 +10,7 @@ import com.likelion.news.repository.CrawledNewsRepository;
 import com.likelion.news.repository.RefinedNewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,7 @@ public class NewsService {
 
 
     public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
-        List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size));
+        List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size, Sort.by("refinedNewsId").descending()));
 
         return findNewsList.stream().map(RefinedNewsReadDto::toDto).toList();
 

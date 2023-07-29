@@ -24,6 +24,7 @@ public class RefinedNews {
     private String articleSummary;
 
     @OneToMany(mappedBy = "refinedNews")
+    @Builder.Default
     private List<NewsEmotion> emotions = new ArrayList<>();
 
 }

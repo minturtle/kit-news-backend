@@ -37,6 +37,7 @@ public class User {
     private UserType userType;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdTime;
+    @Builder.Default
+    private LocalDateTime createdTime = LocalDateTime.now();
 
 }
