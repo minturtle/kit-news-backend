@@ -154,10 +154,12 @@ class NewsControllerIntegrationTest {
         setUpData();
 
         NewsEmotionResponse expectedEmotionResp = NewsEmotionResponse.builder()
+                .newsId(refinedNews.getRefinedNewsId())
+                .emotionCounts(Map.of(NewsEmotionType.LIKE, 2, NewsEmotionType.DISLIKE, 1))
                 .build();
 
-        ApiResponse<List<NewsEmotionResponse>> expectedRespBody = ApiResponse.<List<NewsEmotionResponse>>builder()
-                .data(List.of(expectedEmotionResp)).build();
+        ApiResponse<NewsEmotionResponse> expectedRespBody = ApiResponse.<NewsEmotionResponse>builder()
+                .data(expectedEmotionResp).build();
         //when & then
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/news/emotions")

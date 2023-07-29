@@ -2,6 +2,7 @@ package com.likelion.news.controller;
 
 
 import com.likelion.news.dto.CommentDto;
+import com.likelion.news.dto.NewsEmotionDto;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.CommentResponse;
 import com.likelion.news.dto.response.NewsEmotionResponse;
@@ -55,6 +56,17 @@ public class NewsController {
 
         return ApiResponse.<List<CommentResponse>>builder()
                 .data(commentDtoList.stream().map(CommentResponse::of).toList())
+                .build();
+    }
+    //TODO : JWT Token을 사용해 사용자가 news에 좋아요를 눌렀는지 확인하는 로직 필요
+    @GetMapping("/emotions")
+    public ApiResponse<NewsEmotionResponse> getNewsEmotionsByNews(@RequestParam @NotNull Long newsId){
+
+        List<NewsEmotionDto> emotionDtos =  newsService.getEmotionsByNews(newsId);
+
+
+        return  ApiResponse.<NewsEmotionResponse>builder()
+                .data(NewsEmotionResponse.of(newsId, emotionDtos))
                 .build();
     }
 

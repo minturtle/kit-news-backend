@@ -2,14 +2,17 @@ package com.likelion.news.service;
 
 
 import com.likelion.news.dto.CommentDto;
+import com.likelion.news.dto.NewsEmotionDto;
 import com.likelion.news.dto.RefinedNewsContentDto;
 import com.likelion.news.dto.RefinedNewsReadDto;
 import com.likelion.news.entity.Comment;
 import com.likelion.news.entity.CrawledNews;
+import com.likelion.news.entity.NewsEmotion;
 import com.likelion.news.entity.RefinedNews;
 import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.repository.CommentRepository;
 import com.likelion.news.repository.CrawledNewsRepository;
+import com.likelion.news.repository.NewsEmotionRepository;
 import com.likelion.news.repository.RefinedNewsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +33,7 @@ public class NewsService {
     private final CrawledNewsRepository crawledNewsRepository;
     private final RefinedNewsRepository refinedNewsRepository;
     private final CommentRepository commentRepository;
-
+    private final NewsEmotionRepository newsEmotionRepository;
 
     public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
         List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size, Sort.by("refinedNewsId").descending()));
@@ -115,5 +118,12 @@ public class NewsService {
 
 
         return comments.stream().map(CommentDto::toDto).toList();
+    }
+
+    public List<NewsEmotionDto> getEmotionsByNews(Long newsId) {
+        List<NewsEmotion> emotions = newsEmotionRepository.findAllByNewsId(newsId);
+
+
+        return emotions.stream().map(NewsEmotionDto::toDto).toList();
     }
 }
