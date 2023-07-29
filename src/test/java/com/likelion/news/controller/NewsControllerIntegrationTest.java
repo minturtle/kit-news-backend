@@ -2,6 +2,7 @@ package com.likelion.news.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.likelion.news.dto.response.ApiResponse;
+import com.likelion.news.dto.response.CommentResponse;
 import com.likelion.news.dto.response.NewsResponse;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.*;
@@ -54,6 +55,8 @@ class NewsControllerIntegrationTest {
 
     private User testExpert;
 
+    private RefinedNews refinedNews;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -70,22 +73,14 @@ class NewsControllerIntegrationTest {
         //given
         setUpData();
 
-        NewsResponse.CommentResponse expectedCommentResp = NewsResponse.CommentResponse.builder()
-                .expertUid(testExpert.getUid())
-                .expertName(testExpert.getName())
-                .content("금오공대 ㅇㅈ합니다.")
-                .emotionCounts(Map.of(CommentEmotionType.LIKE, 1))
-                .build();
         NewsResponse expectedRespData = NewsResponse.builder()
+                .newsId(refinedNews.getRefinedNewsId())
                 .link("http://test-new.org")
                 .articleCategory(ArticleCategory.IT_SCIENCE)
                 .title("테스트 뉴스 제목입니다.")
                 .content("테스트 뉴스 본문입니다.")
                 .summary("테스트 뉴스 요약본입니다.")
-                .emotionCounts(Map.<NewsEmotionType, Integer>of(
-                        NewsEmotionType.LIKE, 2,
-                        NewsEmotionType.DISLIKE, 1))
-                .comments(List.of(expectedCommentResp))
+                .emotionCounts(Map.of(NewsEmotionType.LIKE, 2, NewsEmotionType.DISLIKE, 1))
                 .build();
 
         ApiResponse<List<NewsResponse>> expectedRespBody = ApiResponse.<List<NewsResponse>>builder()
@@ -123,6 +118,23 @@ class NewsControllerIntegrationTest {
 
 
     }
+
+
+    @Test
+    @DisplayName("newsId에 해당하는 comment를 조회할 수 있다.")
+    void t3() throws Exception {
+        //given
+        CommentResponse expectedCommentResp = CommentResponse.builder()
+                .expertUid(testExpert.getUid())
+                .expertName(testExpert.getName())
+                .content("금오공대 ㅇㅈ합니다.")
+                .emotionCounts(Map.of(CommentEmotionType.LIKE, 1))
+                .build();
+        //when
+
+        //then
+
+    }
     private void setUpData() {
         testExpert = User.builder()
                 .name("testUser1")
@@ -154,7 +166,7 @@ class NewsControllerIntegrationTest {
                 .articleContent("테스트 뉴스 본문입니다.")
                 .build();
 
-        RefinedNews refinedNews = RefinedNews.builder()
+        refinedNews = RefinedNews.builder()
                 .crawledNews(crawledNews)
                 .articleSummary("테스트 뉴스 요약본입니다.")
                 .build();
