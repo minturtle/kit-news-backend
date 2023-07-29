@@ -84,7 +84,7 @@ class NewsControllerIntegrationTest {
         ApiResponse<List<NewsResponse>> expectedRespBody = ApiResponse.<List<NewsResponse>>builder()
                 .data(List.of(expectedRespData))
                 .build();
-        //when
+        //when & then
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/news/list")
                 .param("from", "0")
@@ -93,10 +93,29 @@ class NewsControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(expectedRespBody)));
-        //then
-        
+
     }
 
+    @Test
+    @DisplayName("뉴스가 조회되지 않을때, 200과 함께 빈 data가 리턴된다.")
+    void t2() throws Exception {
+        //given
+        ApiResponse<List<NewsResponse>> expectedRespBody = ApiResponse.<List<NewsResponse>>builder()
+                .data(List.of())
+                .build();
+
+        //when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/news/list")
+                                .param("from", "0")
+                                .param("size", "10")
+                                .param("category", ArticleCategory.IT_SCIENCE.name()))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(expectedRespBody)));
+
+
+    }
     private void setUpData() {
         User testUser = User.builder()
                 .name("testUser1")
@@ -154,6 +173,7 @@ class NewsControllerIntegrationTest {
         refinedNewsRepository.save(refinedNews);
         newsEmotionRepository.saveAll(List.of(newsEmotion1, newsEmotion2, newsEmotion3));
     }
+
 
 
 }
