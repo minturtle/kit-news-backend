@@ -27,4 +27,10 @@ public class RefinedNews {
     @Builder.Default
     private List<NewsEmotion> emotions = new ArrayList<>();
 
+
+
+    @OneToMany(mappedBy = "refinedNews")
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
+
 }

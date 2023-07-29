@@ -117,12 +117,12 @@ class NewsControllerIntegrationTest {
 
     }
     private void setUpData() {
-        User testUser = User.builder()
+        User testAdmin = User.builder()
                 .name("testUser1")
                 .kakaoUid(21234L)
                 .uid("abc")
                 .loginType(LoginType.KAKAO)
-                .userType(UserType.ROLE_USER)
+                .userType(UserType.ROLE_EXPERT)
                 .build();
         User testUser2 = User.builder()
                 .name("testUser2")
@@ -155,7 +155,7 @@ class NewsControllerIntegrationTest {
         NewsEmotion newsEmotion1 = NewsEmotion.builder()
                 .refinedNews(refinedNews)
                 .emotionType(NewsEmotionType.LIKE)
-                .user(testUser)
+                .user(testAdmin)
                 .build();
         NewsEmotion newsEmotion2 = NewsEmotion.builder()
                 .refinedNews(refinedNews)
@@ -168,7 +168,7 @@ class NewsControllerIntegrationTest {
                 .user(testUser3)
                 .build();
 
-        userRepository.saveAll(List.of(testUser, testUser2, testUser3));
+        userRepository.saveAll(List.of(testAdmin, testUser2, testUser3));
         crawledNewsRepository.save(crawledNews);
         refinedNewsRepository.save(refinedNews);
         newsEmotionRepository.saveAll(List.of(newsEmotion1, newsEmotion2, newsEmotion3));
