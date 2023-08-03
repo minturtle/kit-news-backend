@@ -31,10 +31,11 @@ public class SecurityConfig {
                 .cors(cors-> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests((authorizeHttpRequest)->{
                     authorizeHttpRequest
+                            .requestMatchers("/api/login/**").permitAll()
+                            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**" ).permitAll()
                             .requestMatchers("/api/expert/**").hasRole("EXPERT")
                             .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                            .requestMatchers("/api/login/**").permitAll()
-                            .anyRequest().authenticated();
+                            .anyRequest().permitAll();
 
                 })
                 .oauth2Login(oauth2Login->{
