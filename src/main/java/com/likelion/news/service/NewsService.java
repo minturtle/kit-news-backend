@@ -60,14 +60,31 @@ public class NewsService {
         Integer maximumSize = environment.getProperty("clova.summary.maximum-content-size", Integer.class);
 
 
-
+        // 먼저 모든 News를 가져 온다.
         List<CrawledNews> newsList = crawledNewsRepository.findAllByArticleCategory(articleType);
-        Set<Integer> randomNumbers = getRandomNumbers(newsList.size(), size);
-        ArrayList<CrawledNews> result = new ArrayList<>();
         
-        randomNumbers.stream().filter(i->newsList.get(i).contentSizeIsIn(minimumSize, maximumSize)).forEach(i->result.add(newsList.get(i)));
+
+        Set<CrawledNews> result = new HashSet<>();
+
+
+        //Random Number을 뽑아온 후, 그에 해당하는 index의 뉴스의 content가 조건을 만족하는지 확인한다.
+        // resultSize가 parameter로 받은 size에 만족할 때까지 반복한다.
+        loop: while(true){
+            Set<Integer> randomNumbers = getRandomNumbers(newsList.size(), size);
+
+            List<CrawledNews> satisfiedNewsList = randomNumbers.stream().map(newsList::get).filter(n -> n.contentSizeIsIn(minimumSize, maximumSize)).toList();
+
+            for(CrawledNews news : satisfiedNewsList){
+                if(result.size() >= size){
+                    break loop;
+                }
+                result.add(news);
+            }
+        }
+
+
         
-        return result;
+        return new ArrayList<>(result);
     }
     /**
      * @methodName getRandomNews
