@@ -5,6 +5,9 @@ import com.likelion.news.entity.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,8 +37,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Builder.Default
     private LocalDateTime createdTime = LocalDateTime.now();
+
 
 }
