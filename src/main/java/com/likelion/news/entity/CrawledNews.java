@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,4 +32,17 @@ public class CrawledNews {
     @OneToMany(mappedBy = "crawledNews", cascade = CascadeType.REMOVE)
     private List<RefinedNews> refinedNewsList;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CrawledNews that = (CrawledNews) o;
+        return Objects.equals(crawledNewsId, that.crawledNewsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crawledNewsId);
+    }
 }

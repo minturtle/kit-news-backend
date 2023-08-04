@@ -4,6 +4,8 @@ import com.likelion.news.entity.enums.CommentEmotionType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "comment_emotions")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,5 +29,16 @@ public class CommentEmotion {
     private CommentEmotionType emotionType;
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CommentEmotion that = (CommentEmotion) o;
+        return Objects.equals(commentEmotionId, that.commentEmotionId);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(commentEmotionId);
+    }
 }

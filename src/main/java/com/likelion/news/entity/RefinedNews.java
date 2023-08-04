@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,4 +34,16 @@ public class RefinedNews {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RefinedNews that = (RefinedNews) o;
+        return Objects.equals(refinedNewsId, that.refinedNewsId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(refinedNewsId);
+    }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,4 +33,17 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<CommentEmotion> commentEmotions;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(commentId, comment.commentId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(commentId);
+    }
 }

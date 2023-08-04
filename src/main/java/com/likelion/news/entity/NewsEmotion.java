@@ -5,6 +5,8 @@ import com.likelion.news.entity.enums.NewsEmotionType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,5 +28,17 @@ public class NewsEmotion {
     private User user;
     private NewsEmotionType emotionType;
 
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NewsEmotion that = (NewsEmotion) o;
+        return Objects.equals(newsEmotionId, that.newsEmotionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(newsEmotionId);
+    }
 }

@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
+
 @Entity
 @Table(name = "news_trust_emotions")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,5 +26,18 @@ public class NewsTrustEmotion {
     private User user;
     private NewsTrustEmotionType trustEmotionType;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NewsTrustEmotion that = (NewsTrustEmotion) o;
+        return Objects.equals(newsTrustEmotionId, that.newsTrustEmotionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(newsTrustEmotionId);
+    }
 }
 
