@@ -1,10 +1,7 @@
 package com.likelion.news.service;
 
 
-import com.likelion.news.dto.CommentDto;
-import com.likelion.news.dto.NewsEmotionDto;
-import com.likelion.news.dto.RefinedNewsContentDto;
-import com.likelion.news.dto.RefinedNewsReadDto;
+import com.likelion.news.dto.*;
 import com.likelion.news.entity.Comment;
 import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.NewsEmotion;
@@ -151,5 +148,10 @@ public class NewsService {
 
 
         return emotions.stream().map(NewsEmotionDto::toDto).toList();
+    }
+
+    public List<NewsTrustEmotionDto> getNewsTrustEmotionByNews(Long newsId) {
+
+        return List.of();
     }
 }

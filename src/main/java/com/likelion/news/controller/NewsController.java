@@ -3,6 +3,7 @@ package com.likelion.news.controller;
 
 import com.likelion.news.dto.CommentDto;
 import com.likelion.news.dto.NewsEmotionDto;
+import com.likelion.news.dto.NewsTrustEmotionDto;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.CommentResponse;
 import com.likelion.news.dto.response.NewsEmotionResponse;
@@ -79,7 +80,7 @@ public class NewsController {
     public ApiResponse<NewsEmotionResponse> getNewsEmotionsByNews(@RequestParam @NotNull Long newsId){
 
         List<NewsEmotionDto> emotionDtos =  newsService.getEmotionsByNews(newsId);
-
+        List<NewsTrustEmotionDto> trustEmotionDto = newsService.getNewsTrustEmotionByNews(newsId);
 
         return  ApiResponse.<NewsEmotionResponse>builder()
                 .data(NewsEmotionResponse.of(newsId, emotionDtos))
