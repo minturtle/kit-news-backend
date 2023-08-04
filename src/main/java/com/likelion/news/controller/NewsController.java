@@ -12,9 +12,12 @@ import com.likelion.news.service.NewsService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,16 +51,29 @@ public class NewsController {
     }
 
 
-    //TODO : JWT Token을 사용해 사용자가 Comment에 좋아요를 눌렀는지 확인하는 로직 필요
     @GetMapping("/comment")
     public ApiResponse<List<CommentResponse>> getCommentsByNewsId(@RequestParam @NotNull Long newsId){
+        Optional<String> uid = getUid();
+
+        // JWT로 유저가 조회되지 않는다면, UserEmotion 정보를 NULL로 설정해 리턴
+        if(uid.isEmpty()){
+            List<CommentDto> commentDtoList = newsService.getCommentByNewsId(newsId);
+
+            return ApiResponse.<List<CommentResponse>>builder()
+                    .data(commentDtoList.stream().map(CommentResponse::ofUserNull).toList())
+                    .build();
+        }
 
         List<CommentDto> commentDtoList = newsService.getCommentByNewsId(newsId);
 
+
         return ApiResponse.<List<CommentResponse>>builder()
-                .data(commentDtoList.stream().map(CommentResponse::of).toList())
+                .data(commentDtoList.stream().map(c->CommentResponse.of(c, uid.get())).toList())
                 .build();
+
     }
+
+
     //TODO : JWT Token을 사용해 사용자가 news에 좋아요를 눌렀는지 확인하는 로직 필요
     @GetMapping("/emotions")
     public ApiResponse<NewsEmotionResponse> getNewsEmotionsByNews(@RequestParam @NotNull Long newsId){
@@ -71,4 +87,19 @@ public class NewsController {
     }
 
 
+    /**
+     * @author minseok kim
+     * @description SecurityContextHolder에서 uid를 가져오는 메서드
+     * @param
+     * @return SecurityContextHolder에서 조회된 uid
+    */
+    private Optional<String> getUid() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication.isAuthenticated()){
+            return Optional.of((String)authentication.getPrincipal());
+        }
+
+        return Optional.empty();
+    }
 }

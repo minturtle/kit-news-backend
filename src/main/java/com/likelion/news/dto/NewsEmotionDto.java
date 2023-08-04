@@ -13,6 +13,7 @@ public class NewsEmotionDto {
     private Long userId;
     private NewsEmotionType emotionType;
 
+
     public static NewsEmotionDto toDto(NewsEmotion entity){
         return NewsEmotionDto.builder()
                 .newsId(entity.getRefinedNews().getRefinedNewsId())

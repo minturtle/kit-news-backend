@@ -38,7 +38,7 @@ public class CommentDto {
 
     @Builder
     @Getter
-    public static class CommentEmotionDto{
+    public class CommentEmotionDto{
         private String uid;
         private CommentEmotionType emotionType;
 
