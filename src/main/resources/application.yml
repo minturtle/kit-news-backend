@@ -14,6 +14,8 @@ clova:
     secret: ${clova.client.secret}
   summary:
     size: 5
+    minimum-content-size: 1000
+    maximum-content-size: 2000
 
 crawler:
   shell:

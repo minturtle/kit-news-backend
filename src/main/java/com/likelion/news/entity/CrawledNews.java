@@ -45,4 +45,16 @@ public class CrawledNews {
     public int hashCode() {
         return Objects.hash(crawledNewsId);
     }
+
+
+    /**
+     * @author minseok kim
+     * @description contentSize가 범위 내에 속하는지를 체크하는 메서드
+     * @param minimumSize content의 최소 크기
+     * @param maximumSize content의 최대 크기
+     * @return contentSize가 minimumSize ~ maximumSize에 속한다면 true 리턴
+    */
+    public boolean contentSizeIsIn(Integer minimumSize, Integer maximumSize) {
+        return (minimumSize < articleContent.length()) && (maximumSize > articleContent.length());
+    }
 }

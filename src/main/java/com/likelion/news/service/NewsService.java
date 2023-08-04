@@ -15,6 +15,7 @@ import com.likelion.news.repository.CrawledNewsRepository;
 import com.likelion.news.repository.NewsEmotionRepository;
 import com.likelion.news.repository.RefinedNewsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,9 @@ public class NewsService {
     private final RefinedNewsRepository refinedNewsRepository;
     private final CommentRepository commentRepository;
     private final NewsEmotionRepository newsEmotionRepository;
+    private final Environment environment;
+
+
 
     public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
         List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size, Sort.by("refinedNewsId").descending()));
@@ -52,11 +56,16 @@ public class NewsService {
     * @return List<CrawledNews>
      */
     public List<CrawledNews> getRandomNews(Integer size, ArticleCategory articleType){
+        Integer minimumSize = environment.getProperty("clova.summary.minimum-content-size", Integer.class);
+        Integer maximumSize = environment.getProperty("clova.summary.maximum-content-size", Integer.class);
+
+
+
         List<CrawledNews> newsList = crawledNewsRepository.findAllByArticleCategory(articleType);
         Set<Integer> randomNumbers = getRandomNumbers(newsList.size(), size);
         ArrayList<CrawledNews> result = new ArrayList<>();
         
-        randomNumbers.forEach(i->result.add(newsList.get(i)));
+        randomNumbers.stream().filter(i->newsList.get(i).contentSizeIsIn(minimumSize, maximumSize)).forEach(i->result.add(newsList.get(i)));
         
         return result;
     }
