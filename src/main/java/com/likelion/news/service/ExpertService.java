@@ -35,6 +35,17 @@ public class ExpertService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+
+    /*
+     * @methodName: registerExpert
+     * @author: parkjunha
+     * @description:
+     *
+     * @param: String 사용자 uid
+     * @param: ExpertRequest 전문가 정보
+     * @param: List<MultipartFile> 증명서 이미지들
+     * @return: void
+     */
     public void registerExpert(String uid, ExpertRequest req, List<MultipartFile> images) throws IOException {
         User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
         ExpertInfo expertInfo = ExpertInfo.builder()
@@ -53,7 +64,17 @@ public class ExpertService {
 
     }
 
+    /*
+     * @methodName: createCertificationLinks
+     * @author: parkjunha
+     * @description: 증명서 url 리스트를 생성하는 메서드
+     *
+     * @param: List<MultipartFile> 증명서 파일 여러 장
+     * @param: ExpertInfo 전문가 정보
+     * @return: List<Certification> 증명서 url 리스트
+     */
     private List<Certification> createCertificationLinks(List<MultipartFile> images, ExpertInfo expertInfo) throws IOException {
+
         List<Certification> certificationLinks = new ArrayList<>();
         for (MultipartFile image : images) {
             String url = uploadFileToS3(image);
@@ -67,6 +88,14 @@ public class ExpertService {
         return certificationLinks;
     }
 
+    /*
+     * @methodName: uploadFileToS3
+     * @author: parkjunha
+     * @description: 이미지 파일을 s3 정적 서버에 저장하는 메서드
+     *
+     * @param: MultipartFile 저장할 이미지 파일
+     * @return: String S3에 저장한 파일 url
+     */
     private String uploadFileToS3(MultipartFile file) throws IOException {
         String fileName=file.getOriginalFilename();
         String fileUrl= "https://" + bucket + ".s3.ap-northeast-2.amazonaws.com/" +fileName;
@@ -102,6 +131,16 @@ public class ExpertService {
         commentRepository.delete(findComment);
     }
 
+    /*
+     * @methodName: checkCommentAuth
+     * @author: parkjunha
+     * @description: 수정, 삭제하고자 하는 댓글이 해당 뉴스, 유저 정보와 일치하는지 검사하는 메서드
+     *
+     * @param: String 사용자 uid
+     * @param: Long 댓글 id
+     * @param: Long 뉴스 id
+     * @return: Comment 검증된 댓글 반환
+     */
     private Comment checkCommentAuth(String uid, Long commentId, Long newsId) {
         User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
         RefinedNews findNews = refinedNewsRepository.findById(newsId).orElseThrow(NoNewsException::new);
