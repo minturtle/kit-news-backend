@@ -47,7 +47,7 @@ public class ExpertController {
                                               @PathVariable Long newsId,
                                               @PathVariable Long commentId){
         String uid = getUid().get();
-        expertService.updateComment(uid, newsId, commentId, comment);
+        expertService.updateComment(uid, commentId, newsId, comment);
         return ResponseEntity.ok().build();
     }
 
@@ -56,7 +56,7 @@ public class ExpertController {
     public ResponseEntity<Void> deleteComment(@PathVariable Long newsId,
                                               @PathVariable Long commentId){
         String uid = getUid().get();
-        expertService.deleteComment(uid, newsId, commentId);
+        expertService.deleteComment(uid, commentId, newsId);
         return  ResponseEntity.ok().build();
     }
 

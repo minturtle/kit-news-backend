@@ -28,7 +28,7 @@ public class Comment {
     @Builder.Default
     private LocalDateTime createdTime = LocalDateTime.now();
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(name="refined_news_id")
     private RefinedNews refinedNews;
 
