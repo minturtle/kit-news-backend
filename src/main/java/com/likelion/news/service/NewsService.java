@@ -173,14 +173,21 @@ public class NewsService {
     }
 
     @Transactional
-    public void deleteEmotion(String uid, EmotionClass emotionClass, Long emotionId) {
-        userEmotionService.deleteEmotion(uid, emotionClass, emotionId);
+    public void deleteEmotion(String uid, EmotionClass emotionClass) {
+        User user = userRepository.findUserByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
+
+
+        userEmotionService.deleteEmotion(user, emotionClass);
     }
 
 
     @Transactional
-    public void deleteCommentEmotion(String uid, Long commentEmotionId) {
-        userEmotionService.deleteCommentEmotion(uid, commentEmotionId);
+    public void deleteCommentEmotion(String uid) {
+        User user = userRepository.findUserByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
+
+        userEmotionService.deleteCommentEmotion(user);
     }
 
 

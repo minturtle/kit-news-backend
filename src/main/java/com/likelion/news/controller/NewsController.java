@@ -119,8 +119,8 @@ public class NewsController {
         newsService.saveCommentEmotion(uid.get(), commentId, emotionType);
     }
 
-    @DeleteMapping("/emotion/news/{emotionClass}/{emotionId}")
-    public void removeEmotion(@PathVariable EmotionClass emotionClass, @PathVariable Long emotionId){
+    @DeleteMapping("/emotion/news/{emotionClass}")
+    public void removeEmotion(@PathVariable EmotionClass emotionClass){
         final Optional<String> uid = getUid();
 
 
@@ -129,11 +129,11 @@ public class NewsController {
         }
 
 
-        newsService.deleteEmotion(uid.get(), emotionClass, emotionId);
+        newsService.deleteEmotion(uid.get(), emotionClass);
     }
 
-    @DeleteMapping("/emotion/comment/{emotionId}")
-    public void removeCommentEmotion(@PathVariable Long emotionId){
+    @DeleteMapping("/emotion/comment")
+    public void removeCommentEmotion(){
         final Optional<String> uid = getUid();
 
 
@@ -141,7 +141,7 @@ public class NewsController {
             throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
         }
 
-        newsService.deleteCommentEmotion(uid.get(), emotionId);
+        newsService.deleteCommentEmotion(uid.get());
     }
 
     /**

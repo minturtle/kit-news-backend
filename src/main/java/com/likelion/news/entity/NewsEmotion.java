@@ -19,7 +19,7 @@ public class NewsEmotion implements UserEmotion{
     private Long newsEmotionId;
 
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refined_news_id")
     private RefinedNews refinedNews;
 

@@ -39,12 +39,15 @@ public class NewsEmotionResponse {
             Optional<String> uid
     ) {
 
-        checkUserClickedEmotion(newsEmotionDtoList, uid);
-        checkUserClickedTrustEmotion(newsTrustEmotionDtoList, uid);
+        UserEmotionInfo<NewsEmotionType> userEmotionInfo = checkUserClickedEmotion(newsEmotionDtoList, uid);
+        UserEmotionInfo<NewsTrustEmotionType> trustUserEmotionInfo = checkUserClickedTrustEmotion(newsTrustEmotionDtoList, uid);
 
 
         NewsEmotionResponse resp = NewsEmotionResponse.builder()
-                .newsId(newsId).build();
+                .newsId(newsId)
+                .userNewsEmotionInfo(userEmotionInfo)
+                .userNewsTrustEmotionInfo(trustUserEmotionInfo)
+                .build();
 
 
         for(NewsEmotionDto dto : newsEmotionDtoList){
@@ -70,7 +73,7 @@ public class NewsEmotionResponse {
 
         // 탐색 성공시 userClick을 true로 설정
         for(NewsTrustEmotionDto dto : newsTrustEmotionDtoList){
-            if(dto.getUid().equals(uid.get())){
+            if(!dto.getUid().equals(uid.get())){
                 continue;
             }
             emotionInfo.setUserClicked(true);
@@ -93,7 +96,7 @@ public class NewsEmotionResponse {
 
         // 탐색 성공시 userClick을 true로 설정
        for(NewsEmotionDto dto : newsEmotionDtoList){
-            if(dto.getUid().equals(uid.get())){
+            if(!dto.getUid().equals(uid.get())){
                 continue;
             }
            emotionInfo.setUserClicked(true);

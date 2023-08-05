@@ -14,6 +14,8 @@ import com.likelion.news.repository.NewsTrustEmotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class UserEmotionService {
@@ -57,11 +59,16 @@ public class UserEmotionService {
 
     }
 
-    public void deleteCommentEmotion(String uid, Long commentEmotionId) {
-        CommentEmotion commentEmotion = commentEmotionRepository.findById(commentEmotionId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_ENTITY.getMessage()));
+    public void deleteCommentEmotion(User user) {
+        final Optional<CommentEmotion> commentOptional = commentEmotionRepository.findByUser(user);
+        if(commentOptional.isEmpty()){
+            return;
+        }
 
-        if(!commentEmotion.getUser().getUid().equals(uid)){
+
+        CommentEmotion commentEmotion = commentOptional.get();
+
+        if(!commentEmotion.getUser().equals(user)){
             throw new ForbiddenException(ExceptionMessages.FORBIDDEN.getMessage());
         }
 
@@ -69,22 +76,34 @@ public class UserEmotionService {
 
     }
 
-    public void deleteEmotion(String uid, EmotionClass emotionClass, Long emotionId) {
+    public void deleteEmotion(User user, EmotionClass emotionClass) {
         if(emotionClass.equals(EmotionClass.NEWS_EMOTION)){
-            NewsEmotion newsEmotion = newsEmotionRepository.findById(emotionId)
-                    .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_ENTITY.getMessage()));
+            final Optional<NewsEmotion> newsEmotionOptional = newsEmotionRepository.findByUser(user);
 
-            if(!newsEmotion.getUser().getUid().equals(uid)){
+            if(newsEmotionOptional.isEmpty()){
+                return;
+            }
+
+            NewsEmotion newsEmotion = newsEmotionOptional.get();
+
+            if(!newsEmotion.getUser().equals(user)){
                 throw new ForbiddenException(ExceptionMessages.FORBIDDEN.getMessage());
             }
 
             newsEmotionRepository.delete(newsEmotion);
+
+            return;
         }
 
-        final NewsTrustEmotion newsEmotion = newsTrustEmotionRepository.findById(emotionId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_ENTITY.getMessage()));
+        final Optional<NewsTrustEmotion> newsTrustEmotionOptional = newsTrustEmotionRepository.findByUser(user);
 
-        if(!newsEmotion.getUser().getUid().equals(uid)){
+        if(newsTrustEmotionOptional.isEmpty()){
+            return;
+        }
+
+
+        final NewsTrustEmotion newsEmotion = newsTrustEmotionOptional.get();
+        if(!newsEmotion.getUser().equals(user)){
             throw new ForbiddenException(ExceptionMessages.FORBIDDEN.getMessage());
         }
 
