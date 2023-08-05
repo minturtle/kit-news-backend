@@ -169,7 +169,7 @@ public class NewsService {
 
     public void saveUserEmotion(String uid, Long newsId, EmotionClass emotionClass, String emotionType){
         final User user = userRepository.findUserByUid(uid)
-                .orElseThrow(() -> new ClientException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
 
 
 

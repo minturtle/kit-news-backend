@@ -13,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-public class CommentEmotion{
+public class CommentEmotion implements UserEmotion{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentEmotionId;

@@ -13,7 +13,7 @@ import java.util.Objects;
 @Builder
 @Getter
 @Table(name = "news_emotions")
-public class NewsEmotion {
+public class NewsEmotion implements UserEmotion{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long newsEmotionId;

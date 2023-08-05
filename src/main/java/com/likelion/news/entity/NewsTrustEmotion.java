@@ -12,7 +12,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-public class NewsTrustEmotion {
+public class NewsTrustEmotion implements UserEmotion{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long newsTrustEmotionId;
