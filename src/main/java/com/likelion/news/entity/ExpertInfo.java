@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
+
 @Entity
 @Table(name = "expert_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,5 +31,18 @@ public class ExpertInfo {
     @Enumerated(EnumType.STRING)
     private ExpertState expertState;
 
-    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExpertInfo that = (ExpertInfo) o;
+        return Objects.equals(expertInfoId, that.expertInfoId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expertInfoId);
+    }
+
+
 }
