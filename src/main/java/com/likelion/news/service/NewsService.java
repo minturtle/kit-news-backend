@@ -2,15 +2,12 @@ package com.likelion.news.service;
 
 
 import com.likelion.news.dto.*;
-import com.likelion.news.entity.Comment;
-import com.likelion.news.entity.CrawledNews;
-import com.likelion.news.entity.NewsEmotion;
-import com.likelion.news.entity.RefinedNews;
+import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.ArticleCategory;
-import com.likelion.news.repository.CommentRepository;
-import com.likelion.news.repository.CrawledNewsRepository;
-import com.likelion.news.repository.NewsEmotionRepository;
-import com.likelion.news.repository.RefinedNewsRepository;
+import com.likelion.news.entity.enums.EmotionClass;
+import com.likelion.news.exception.ClientException;
+import com.likelion.news.exception.ExceptionMessages;
+import com.likelion.news.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
@@ -31,12 +28,14 @@ import java.util.stream.StreamSupport;
 @Transactional(readOnly = true)
 public class NewsService {
 
+
+    private final UserRepository userRepository;
     private final CrawledNewsRepository crawledNewsRepository;
     private final RefinedNewsRepository refinedNewsRepository;
     private final CommentRepository commentRepository;
     private final NewsEmotionRepository newsEmotionRepository;
     private final Environment environment;
-
+    private final NewsTrustEmotionRepository newsTrustEmotionRepository;
 
 
     public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
@@ -164,7 +163,16 @@ public class NewsService {
     }
 
     public List<NewsTrustEmotionDto> getNewsTrustEmotionByNews(Long newsId) {
+        return newsTrustEmotionRepository.findByNewsId(newsId).stream().map(NewsTrustEmotionDto::toDto).toList();
+    }
 
-        return List.of();
+
+    public void saveUserEmotion(String uid, Long newsId, EmotionClass emotionClass, String emotionType){
+        final User user = userRepository.findUserByUid(uid)
+                .orElseThrow(() -> new ClientException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
+
+
+
+
     }
 }

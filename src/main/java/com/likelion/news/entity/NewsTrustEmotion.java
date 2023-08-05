@@ -2,10 +2,7 @@ package com.likelion.news.entity;
 
 import com.likelion.news.entity.enums.NewsTrustEmotionType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -14,6 +11,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Getter
 public class NewsTrustEmotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,11 +4,14 @@ package com.likelion.news.controller;
 import com.likelion.news.dto.CommentDto;
 import com.likelion.news.dto.NewsEmotionDto;
 import com.likelion.news.dto.NewsTrustEmotionDto;
+import com.likelion.news.entity.enums.EmotionClass;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.CommentResponse;
 import com.likelion.news.dto.response.NewsEmotionResponse;
 import com.likelion.news.dto.response.NewsResponse;
 import com.likelion.news.entity.enums.ArticleCategory;
+import com.likelion.news.exception.ClientException;
+import com.likelion.news.exception.ExceptionMessages;
 import com.likelion.news.service.NewsService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -89,12 +92,35 @@ public class NewsController {
     }
 
 
+    @PostMapping("/emotion/{EmotionClass}/{EmotionType}")
+    public void emotionClicked(@PathVariable EmotionClass emotionClass, @PathVariable String emotionType){
+        final Optional<String> uid = getUid();
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
+        }
+
+        if(emotionClass.equals(EmotionClass.NEWS_EMOTION)){
+            return;
+        }else if(emotionClass.equals(EmotionClass.COMMENT_EMOTION)){
+            return;
+        }else if(emotionClass.equals(EmotionClass.NEWS_TRUST_EMOTION)){
+            return;
+        }
+
+
+
+
+    }
+
+
+
     /**
      * @author minseok kim
      * @description SecurityContextHolder에서 uid를 가져오는 메서드
      * @param
      * @return SecurityContextHolder에서 조회된 uid
-    */
+     */
     private Optional<String> getUid() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

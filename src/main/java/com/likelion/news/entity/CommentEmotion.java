@@ -1,6 +1,7 @@
 package com.likelion.news.entity;
 
 import com.likelion.news.entity.enums.CommentEmotionType;
+import com.likelion.news.entity.enums.EmotionClass;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-public class CommentEmotion {
+public class CommentEmotion{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentEmotionId;
@@ -27,6 +28,7 @@ public class CommentEmotion {
 
     @Enumerated(EnumType.STRING)
     private CommentEmotionType emotionType;
+
 
 
     @Override
