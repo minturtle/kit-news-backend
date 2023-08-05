@@ -4,6 +4,7 @@ package com.likelion.news.service;
 import com.likelion.news.dto.*;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.ArticleCategory;
+import com.likelion.news.entity.enums.CommentEmotionType;
 import com.likelion.news.entity.enums.EmotionClass;
 import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.ExceptionMessages;
@@ -36,7 +37,7 @@ public class NewsService {
     private final NewsEmotionRepository newsEmotionRepository;
     private final Environment environment;
     private final NewsTrustEmotionRepository newsTrustEmotionRepository;
-
+    private final UserEmotionService userEmotionService;
 
     public List<RefinedNewsReadDto> getNewsByCategory(int from, int size, ArticleCategory category){
         List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size, Sort.by("refinedNewsId").descending()));
@@ -129,24 +130,6 @@ public class NewsService {
         refinedNewsRepository.saveAll(refinedNewsList);
     }
 
-    
-    /**
-    * @methodName getRandomNumbers
-    * @author : Minseok Kim
-    * @description 중복되지 않은 임의의 숫자를 가져오는 함수
-    *
-    * @param  maxNumber 가장 최대 나올 수 있는숫자 -1, 즉, 0~maxNumber-1까지의 숫자가 랜덤으로 나온다
-    * @param size randomNumber을 가져올 갯수
-     */
-    private Set<Integer> getRandomNumbers(int maxNumber, int size){
-        Set<Integer> randomNumbers = new HashSet<>();
-
-        while (randomNumbers.size() < size){
-            int randomNumber = (int)(Math.random() * maxNumber);
-            randomNumbers.add(randomNumber);
-        }
-        return randomNumbers;
-    }
 
     public List<CommentDto> getCommentByNewsId(Long newsId) {
         List<Comment> comments = commentRepository.findCommentsByNewsId(newsId);
@@ -166,13 +149,43 @@ public class NewsService {
         return newsTrustEmotionRepository.findByNewsId(newsId).stream().map(NewsTrustEmotionDto::toDto).toList();
     }
 
-
+    @Transactional
     public void saveUserEmotion(String uid, Long newsId, EmotionClass emotionClass, String emotionType){
-        final User user = userRepository.findUserByUid(uid)
+        User user = userRepository.findUserByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
 
+        RefinedNews news = refinedNewsRepository.findById(newsId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_ENTITY.getMessage()));
+        userEmotionService.saveEmotion(emotionClass, emotionType, user, news);
+
+    }
+
+    @Transactional
+    public void saveCommentEmotion(String uid, Long commentId, CommentEmotionType commentEmotionType){
+        User user = userRepository.findUserByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_ENTITY.getMessage()));
 
 
+        userEmotionService.saveCommentEmotion(commentEmotionType, user, comment);
+    }
+    /**
+     * @methodName getRandomNumbers
+     * @author : Minseok Kim
+     * @description 중복되지 않은 임의의 숫자를 가져오는 함수
+     *
+     * @param  maxNumber 가장 최대 나올 수 있는숫자 -1, 즉, 0~maxNumber-1까지의 숫자가 랜덤으로 나온다
+     * @param size randomNumber을 가져올 갯수
+     */
+    private Set<Integer> getRandomNumbers(int maxNumber, int size){
+        Set<Integer> randomNumbers = new HashSet<>();
 
+        while (randomNumbers.size() < size){
+            int randomNumber = (int)(Math.random() * maxNumber);
+            randomNumbers.add(randomNumber);
+        }
+        return randomNumbers;
     }
 }

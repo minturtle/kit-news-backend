@@ -4,6 +4,7 @@ package com.likelion.news.controller;
 import com.likelion.news.dto.CommentDto;
 import com.likelion.news.dto.NewsEmotionDto;
 import com.likelion.news.dto.NewsTrustEmotionDto;
+import com.likelion.news.entity.enums.CommentEmotionType;
 import com.likelion.news.entity.enums.EmotionClass;
 import com.likelion.news.dto.response.ApiResponse;
 import com.likelion.news.dto.response.CommentResponse;
@@ -92,25 +93,29 @@ public class NewsController {
     }
 
 
-    @PostMapping("/emotion/{EmotionClass}/{EmotionType}")
-    public void emotionClicked(@PathVariable EmotionClass emotionClass, @PathVariable String emotionType){
+    @PostMapping("/emotion/news/{newsId}/{emotionClass}/{emotionType}")
+    public void emotionClicked(@PathVariable Long newsId, @PathVariable EmotionClass emotionClass, @PathVariable String emotionType){
         final Optional<String> uid = getUid();
+
 
         if(uid.isEmpty()){
             throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
         }
 
-        if(emotionClass.equals(EmotionClass.NEWS_EMOTION)){
-            return;
-        }else if(emotionClass.equals(EmotionClass.COMMENT_EMOTION)){
-            return;
-        }else if(emotionClass.equals(EmotionClass.NEWS_TRUST_EMOTION)){
-            return;
+        newsService.saveUserEmotion(uid.get(), newsId, emotionClass, emotionType);
+
+    }
+
+    @PostMapping("/emotion/comment/{commentId}/{emotionType}")
+    public void commentEmotionClicked(@PathVariable Long commentId, CommentEmotionType emotionType){
+        final Optional<String> uid = getUid();
+
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
         }
 
-
-
-
+        newsService.saveCommentEmotion(uid.get(), commentId, emotionType);
     }
 
 
