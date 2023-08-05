@@ -171,6 +171,19 @@ public class NewsService {
 
         userEmotionService.saveCommentEmotion(commentEmotionType, user, comment);
     }
+
+    @Transactional
+    public void deleteEmotion(String uid, EmotionClass emotionClass, Long emotionId) {
+        userEmotionService.deleteEmotion(uid, emotionClass, emotionId);
+    }
+
+
+    @Transactional
+    public void deleteCommentEmotion(String uid, Long commentEmotionId) {
+        userEmotionService.deleteCommentEmotion(uid, commentEmotionId);
+    }
+
+
     /**
      * @methodName getRandomNumbers
      * @author : Minseok Kim
@@ -188,4 +201,5 @@ public class NewsService {
         }
         return randomNumbers;
     }
+
 }
