@@ -15,8 +15,6 @@ import java.util.Objects;
 @Getter
 public class RefinedNews {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="refined_news_id")

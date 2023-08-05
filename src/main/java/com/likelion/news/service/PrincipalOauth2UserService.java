@@ -29,7 +29,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
     /**
      * methodName : loadUser
-     * Author : Junha
+     * Author : parkjunha
      * description : - 인증된 OAuth2 사용자를 불러오는 메서드
      *
      * @param : OAuth2UserRequest userRequest
@@ -55,7 +55,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
     /**
      * methodName : findOrCreateUser
-     * Author : Junha
+     * Author : parkjunha
      * description : - 주어진 OAuth2 사용자 정보를 바탕으로 DB에서 사용자를 찾고, 없는 경우 새 사용자를 생성하는 메서드
      *
      * @param : OAuth2UserInfo oAuth2UserInfo, String provider

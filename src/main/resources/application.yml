@@ -52,3 +52,13 @@ oauth2:
           token-uri: ${spring.security.oauth2.client.provider.kakao.token-uri}
           user-info-uri: ${spring.security.oauth2.client.provider.kakao.user-info-uri}
           user-name-attribute: ${spring.security.oauth2.client.provider.kakao.user-name-attribute}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${cloud.aws.s3.bucket}
+      stack.auto: false
+      region.static: ${cloud.aws.region.static}
+      credentials:
+        accessKey: ${cloud.aws.credentials.access-key}
+        secretKey: ${cloud.aws.credentials.secret-key}
