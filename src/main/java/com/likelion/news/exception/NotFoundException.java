@@ -14,4 +14,10 @@ public class NotFoundException extends RuntimeException{
             super("해당 뉴스를 찾을 수 없습니다.");
         }
     }
+
+    public static class NoCommentException extends NotFoundException {
+        public NoCommentException() {
+            super("해당 댓글을 찾을 수 없습니다.");
+        }
+    }
 }

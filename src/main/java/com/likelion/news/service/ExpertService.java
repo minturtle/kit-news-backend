@@ -6,9 +6,10 @@ import com.likelion.news.dto.ExpertCommentDto;
 import com.likelion.news.dto.ExpertRequest;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.ExpertState;
-import com.likelion.news.exception.NotFoundException;
 import com.likelion.news.exception.NotFoundException.NoNewsException;
 import com.likelion.news.exception.NotFoundException.NoUserException;
+import com.likelion.news.exception.NotFoundException.NoCommentException;
+import com.likelion.news.exception.UnAuthorizedException;
 import com.likelion.news.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,45 @@ public class ExpertService {
 
         amazonS3Client.putObject(bucket,fileName,file.getInputStream(),metadata);
         return fileUrl;
+    }
+
+    public void writeComment(String uid, Long newsId, ExpertCommentDto commentDto){
+        User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
+        RefinedNews refinedNews = refinedNewsRepository.findById(newsId).orElseThrow(NoNewsException::new);
+
+        Comment newComment = Comment.builder()
+                .user(findUser)
+                .refinedNews(refinedNews)
+                .content(commentDto.getContent())
+                .build();
+
+        commentRepository.save(newComment);
+    }
+
+    public void updateComment(String uid, Long commentId, Long newsId, ExpertCommentDto commentDto){
+        Comment findComment = checkCommentAuth(uid, commentId, newsId);
+        findComment.setContent(commentDto.getContent());
+
+    }
+
+    public void deleteComment(String uid, Long newsId, Long commentId){
+        Comment findComment = checkCommentAuth(uid, commentId, newsId);
+        commentRepository.delete(findComment);
+    }
+
+    private Comment checkCommentAuth(String uid, Long commentId, Long newsId) {
+        User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
+        RefinedNews findNews = refinedNewsRepository.findById(newsId).orElseThrow(NoNewsException::new);
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(NoCommentException::new);
+
+        if (!findComment.getRefinedNews().getRefinedNewsId().equals(findNews.getRefinedNewsId())) {
+            throw new UnAuthorizedException("해당 뉴스의 댓글이 아닙니다.");
+        }
+
+        if (!findComment.getUser().getId().equals(findUser.getId())) {
+            throw new UnAuthorizedException("댓글 작성자와 동일한 유저가 아닙니다.");
+        }
+        return findComment;
     }
 
 }
