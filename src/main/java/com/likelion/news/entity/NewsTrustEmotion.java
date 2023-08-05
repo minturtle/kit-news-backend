@@ -22,6 +22,9 @@ public class NewsTrustEmotion implements UserEmotion{
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    @Enumerated(EnumType.STRING)
     private NewsTrustEmotionType trustEmotionType;
 
 

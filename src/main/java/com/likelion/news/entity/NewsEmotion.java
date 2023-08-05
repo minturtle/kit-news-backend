@@ -19,13 +19,15 @@ public class NewsEmotion implements UserEmotion{
     private Long newsEmotionId;
 
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "refined_news_id")
     private RefinedNews refinedNews;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Enumerated(EnumType.STRING)
     private NewsEmotionType emotionType;
 
 

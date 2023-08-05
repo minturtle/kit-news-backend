@@ -84,8 +84,9 @@ public class NewsController {
         Optional<String> uid = getUid();
 
 
-        List<NewsEmotionDto> emotionDtos =  newsService.getEmotionsByNews(newsId);
         List<NewsTrustEmotionDto> trustEmotionDto = newsService.getNewsTrustEmotionByNews(newsId);
+        List<NewsEmotionDto> emotionDtos =  newsService.getEmotionsByNews(newsId);
+
 
         return  ApiResponse.<NewsEmotionResponse>builder()
                 .data(NewsEmotionResponse.of(newsId, emotionDtos, trustEmotionDto, uid))
