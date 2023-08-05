@@ -18,10 +18,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -46,22 +49,31 @@ public class NewsService {
     /**
     * @methodName getRandomNews
     * @author : Minseok Kim
-    * @description articleType에 속한 뉴스중 size개의 뉴스를 뽑아옴
+    * @description articleType에 속한 뉴스중 size개의 뉴스를 뽑아옴. 해당하는 뉴스가 없으면 빈 리스트가 리턴됨.
     *
     * @param size 뽑아올 뉴스의 갯수
     * @param articleType 조회할 뉴스의 카테고리
+    * @param articleDate : 조회하려는 뉴스의 Date
     * @return List<CrawledNews>
      */
-    public List<CrawledNews> getRandomNews(Integer size, ArticleCategory articleType){
+    public List<CrawledNews> getRandomNews(Integer size, ArticleCategory articleType, LocalDate articleDate){
         Integer minimumSize = environment.getProperty("clova.summary.minimum-content-size", Integer.class);
         Integer maximumSize = environment.getProperty("clova.summary.maximum-content-size", Integer.class);
 
 
-        // 먼저 모든 News를 가져 온다.
-        List<CrawledNews> newsList = crawledNewsRepository.findAllByArticleCategory(articleType);
-        
+        // 날짜에 해당하는 모든 News를 가져 온다.
+        LocalDateTime startDateTime = articleDate.atStartOfDay();
+        LocalDateTime endDateTime = articleDate.plusDays(1).atStartOfDay();
+        List<CrawledNews> newsList = crawledNewsRepository
+                .findAllByArticleCategoryAndArticleDateIs(articleType, startDateTime, endDateTime);
+
+        if(newsList.isEmpty()){
+            return List.of();
+        }
 
         Set<CrawledNews> result = new HashSet<>();
+
+
 
 
         //Random Number을 뽑아온 후, 그에 해당하는 index의 뉴스의 content가 조건을 만족하는지 확인한다.
@@ -90,13 +102,14 @@ public class NewsService {
      *
      * @param size 뽑아올 뉴스의 갯수
      * @param articleTypes 조회할 뉴스의 카테고리 리스트
+     * @param articleDate 조회하려는 뉴스의 날짜
      * @return List<CrawledNews>
      */
-    public List<CrawledNews> getRandomNews(Integer size, List<ArticleCategory> articleTypes){
+    public List<CrawledNews> getRandomNews(Integer size, List<ArticleCategory> articleTypes, LocalDate articleDate){
         ArrayList<CrawledNews> result = new ArrayList<>();
 
         for(ArticleCategory articleType : articleTypes) {
-            List<CrawledNews> randomNewsList = getRandomNews(size, articleType);
+            List<CrawledNews> randomNewsList = getRandomNews(size, articleType, articleDate);
 
             result.addAll(randomNewsList);
         }

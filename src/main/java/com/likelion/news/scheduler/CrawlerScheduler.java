@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,16 +37,17 @@ public class CrawlerScheduler {
      * <a href="https://m.blog.naver.com/deeperain/221609802306">...</a>
      * @return 함수의 Return 값은 없으나, 하루의 4개의 뉴스를 요약한 후 DB에 저장합니다.
      */
-    @Scheduled(cron = "0 0 18 * * *")
+    @Scheduled(cron = "0 00 18 * * *")
     public void runCrawling(){
+        log.info("Crawler Scheduler Started");
         String command = createCommand();
 
         shellRunnerService.executeShell(command);
-
     }
 
     @Scheduled(cron = "0 10 18 * * *")
     public void runSummary(){
+        log.info("Summary Scheduler Started");
         Integer summarizationSize = env.getProperty("clova.summary.size", Integer.class);
 
         // 모든 카테고리에서 Summarization 진행
@@ -53,7 +55,7 @@ public class CrawlerScheduler {
 
 
         List<CrawledNews> newsList
-                = newsService.getRandomNews(summarizationSize, List.of(articleTypes));
+                = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.of(2023,8,2));
 
 
         List<RefinedNewsContentDto> resultList = new ArrayList<>();
@@ -78,6 +80,7 @@ public class CrawlerScheduler {
 
         // 요약 완료된 뉴스를 DB에 저장
         newsService.saveRefinedNewsList(resultList);
+        log.info("Summary Scheduler Ended");
     }
 
     private String createCommand() {
