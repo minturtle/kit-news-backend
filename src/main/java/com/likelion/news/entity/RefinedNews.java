@@ -14,8 +14,12 @@ import java.util.Objects;
 @Table(name = "refined_news")
 @Getter
 public class RefinedNews {
+
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="refined_news_id")
     private Long refinedNewsId;
 
     @ManyToOne(fetch = FetchType.LAZY)

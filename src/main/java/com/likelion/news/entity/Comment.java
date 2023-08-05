@@ -27,6 +27,7 @@ public class Comment {
     private LocalDateTime createdTime = LocalDateTime.now();
 
     @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name="refined_news_id")
     private RefinedNews refinedNews;
 
 
