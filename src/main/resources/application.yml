@@ -1,28 +1,37 @@
 spring:
-  config:
-    activate:
-      on-profile: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     #/<IP>:<PORT>/<DB NAME>?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     url: jdbc:mysql://localhost:3308/news?serverTimezone=Asia/Seoul
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
-
-
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
 clova:
   url: ${clova.url}
   client:
     id: ${clova.client.id}
     secret: ${clova.client.secret}
   summary:
-    size: 5
+    size: 1
+    minimum-content-size: 1000
+    maximum-content-size: 2000
 
 crawler:
   shell:
     execute-command: python
     args:
-      test.py
+      crawl.py
 
 oauth2:
   client:

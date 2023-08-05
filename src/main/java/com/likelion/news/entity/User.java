@@ -4,9 +4,12 @@ import com.likelion.news.entity.enums.LoginType;
 import com.likelion.news.entity.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
+
 import org.hibernate.annotations.CreationTimestamp;
 
+
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,5 +39,19 @@ public class User {
     private UserType userType;
 
     @CreationTimestamp
-    private LocalDateTime createdTime;
+    @Builder.Default
+    private LocalDateTime createdTime = LocalDateTime.now();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
