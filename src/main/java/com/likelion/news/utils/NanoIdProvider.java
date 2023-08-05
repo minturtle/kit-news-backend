@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 
 public class NanoIdProvider {
     private static final char[] ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
-    private static final int ID_LENGTH = 21;
+    private static final int ID_LENGTH = 10;
     private static final SecureRandom RANDOM = new SecureRandom();
 
     public static String randomNanoId() {
