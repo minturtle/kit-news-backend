@@ -10,14 +10,14 @@ import lombok.Data;
 public class NewsEmotionDto {
 
     private Long newsId;
-    private Long userId;
+    private String uid;
     private NewsEmotionType emotionType;
 
 
     public static NewsEmotionDto toDto(NewsEmotion entity){
         return NewsEmotionDto.builder()
                 .newsId(entity.getRefinedNews().getRefinedNewsId())
-                .userId(entity.getUser().getId())
+                .uid(entity.getUser().getUid())
                 .emotionType(entity.getEmotionType())
                 .build();
 

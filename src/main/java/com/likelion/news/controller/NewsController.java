@@ -75,15 +75,16 @@ public class NewsController {
     }
 
 
-    //TODO : JWT Token을 사용해 사용자가 news에 좋아요를 눌렀는지 확인하는 로직 필요
     @GetMapping("/emotions")
     public ApiResponse<NewsEmotionResponse> getNewsEmotionsByNews(@RequestParam @NotNull Long newsId){
+        Optional<String> uid = getUid();
+
 
         List<NewsEmotionDto> emotionDtos =  newsService.getEmotionsByNews(newsId);
         List<NewsTrustEmotionDto> trustEmotionDto = newsService.getNewsTrustEmotionByNews(newsId);
 
         return  ApiResponse.<NewsEmotionResponse>builder()
-                .data(NewsEmotionResponse.of(newsId, emotionDtos))
+                .data(NewsEmotionResponse.of(newsId, emotionDtos, trustEmotionDto, uid))
                 .build();
     }
 
