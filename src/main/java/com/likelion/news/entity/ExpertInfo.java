@@ -13,6 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
+@Setter
 public class ExpertInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

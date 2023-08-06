@@ -16,4 +16,5 @@ public class ExpertRegistrationRequestDto {
     private String education;
     private ExpertState expertState;
     private List<String> certificationsUrl;
+    private String uid;
 }
