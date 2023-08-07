@@ -46,6 +46,10 @@ public class NewsService {
 
     }
 
+    public List<RefinedNewsReadDto> getNewsByTitle(String title) {
+        return refinedNewsRepository.findAllByTitle(title).stream().map(RefinedNewsReadDto::toDto).toList();
+    }
+
     /**
     * @methodName getRandomNews
     * @author : Minseok Kim
@@ -173,21 +177,26 @@ public class NewsService {
     }
 
     @Transactional
-    public void deleteEmotion(String uid, EmotionClass emotionClass) {
+    public void deleteEmotion(String uid,Long newsId, EmotionClass emotionClass) {
         User user = userRepository.findUserByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
 
+         RefinedNews news = refinedNewsRepository.findById(newsId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
 
-        userEmotionService.deleteEmotion(user, emotionClass);
+        userEmotionService.deleteEmotion(user,news, emotionClass);
     }
 
 
     @Transactional
-    public void deleteCommentEmotion(String uid) {
+    public void deleteCommentEmotion(String uid, Long commentId) {
         User user = userRepository.findUserByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_USER.getMessage()));
 
-        userEmotionService.deleteCommentEmotion(user);
+         Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessages.CANNOT_FIND_ENTITY.getMessage()));
+
+        userEmotionService.deleteCommentEmotion(user, comment);
     }
 
 
@@ -208,5 +217,6 @@ public class NewsService {
         }
         return randomNumbers;
     }
+
 
 }

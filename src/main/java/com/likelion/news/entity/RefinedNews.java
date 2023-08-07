@@ -31,10 +31,14 @@ public class RefinedNews {
     private List<NewsEmotion> emotions = new ArrayList<>();
 
 
-
     @OneToMany(mappedBy = "refinedNews", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "clippedNews", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private List<NewsClipping> newsClippingList = new ArrayList<>();
+
 
     @Override
     public boolean equals(Object o) {

@@ -15,6 +15,7 @@ import java.util.Map;
 @Builder
 @Data
 public class CommentResponse{
+    private Long commentId;
     private String expertUid;
 
     private String expertProfileImage;
@@ -34,6 +35,7 @@ public class CommentResponse{
 
 
         CommentResponse res = CommentResponse.builder()
+                .commentId(comment.getId())
                 .expertUid(comment.getExpertUid())
                 .expertProfileImage(comment.getExpertProfileImage())
                 .content(comment.getContent())

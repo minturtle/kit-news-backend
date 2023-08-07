@@ -1,6 +1,7 @@
 package com.likelion.news.repository;
 
 import com.likelion.news.entity.NewsTrustEmotion;
+import com.likelion.news.entity.RefinedNews;
 import com.likelion.news.entity.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,4 +17,6 @@ public interface NewsTrustEmotionRepository extends CrudRepository<NewsTrustEmot
     List<NewsTrustEmotion> findByNewsId(@Param("newsId") Long newsId);
 
     Optional<NewsTrustEmotion> findByUser(User user);
+    Optional<NewsTrustEmotion> findByRefinedNewsAndUser(RefinedNews refinedNews, User user);
+
 }

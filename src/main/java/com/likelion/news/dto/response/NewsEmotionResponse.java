@@ -50,11 +50,24 @@ public class NewsEmotionResponse {
                 .build();
 
 
-        for(NewsEmotionDto dto : newsEmotionDtoList){
-            countNewsEmotion(dto, resp.getEmotionCounts());
+
+        //init count map
+        for(NewsEmotionType  emotionType : NewsEmotionType.values()){
+            resp.getEmotionCounts().put(emotionType, 0);
 
         }
+        // emotionType의 갯수 측정
+        for(NewsEmotionDto dto : newsEmotionDtoList){
+            countNewsEmotion(dto, resp.getEmotionCounts());
+        }
 
+
+        // init trust count map
+        for(NewsTrustEmotionType trustEmotionType : NewsTrustEmotionType.values()){
+            resp.getTrustEmotionCounts().put(trustEmotionType, 0);
+        }
+
+        //emotionTrustType의 갯수 측정
         for(NewsTrustEmotionDto dto : newsTrustEmotionDtoList){
             countNewsTrustEmotion(dto, resp.getTrustEmotionCounts());
         }
@@ -109,9 +122,6 @@ public class NewsEmotionResponse {
 
 
     private static void countNewsTrustEmotion(NewsTrustEmotionDto dto, Map<NewsTrustEmotionType, Integer> trustEmotionCountMap) {
-        if(!trustEmotionCountMap.containsKey(dto.getTrustEmotionType())){
-            trustEmotionCountMap.put(dto.getTrustEmotionType(), 0);
-        }
         Integer prevCount = trustEmotionCountMap.get(dto.getTrustEmotionType());
 
         trustEmotionCountMap.put(dto.getTrustEmotionType(), prevCount + 1);
@@ -119,10 +129,6 @@ public class NewsEmotionResponse {
 
 
     private static void countNewsEmotion(NewsEmotionDto dto, Map<NewsEmotionType, Integer> emotionCountMap) {
-
-        if(!emotionCountMap.containsKey(dto.getEmotionType())){
-            emotionCountMap.put(dto.getEmotionType(), 0);
-        }
         Integer prevCount = emotionCountMap.get(dto.getEmotionType());
 
         emotionCountMap.put(dto.getEmotionType(), prevCount + 1);

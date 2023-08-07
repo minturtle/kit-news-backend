@@ -59,8 +59,8 @@ public class UserEmotionService {
 
     }
 
-    public void deleteCommentEmotion(User user) {
-        final Optional<CommentEmotion> commentOptional = commentEmotionRepository.findByUser(user);
+    public void deleteCommentEmotion(User user, Comment comment) {
+        final Optional<CommentEmotion> commentOptional = commentEmotionRepository.findByCommentAndUser(comment, user);
         if(commentOptional.isEmpty()){
             return;
         }
@@ -76,9 +76,9 @@ public class UserEmotionService {
 
     }
 
-    public void deleteEmotion(User user, EmotionClass emotionClass) {
+    public void deleteEmotion(User user, RefinedNews news, EmotionClass emotionClass) {
         if(emotionClass.equals(EmotionClass.NEWS_EMOTION)){
-            final Optional<NewsEmotion> newsEmotionOptional = newsEmotionRepository.findByUser(user);
+            final Optional<NewsEmotion> newsEmotionOptional = newsEmotionRepository.findByRefinedNewsAndUser(news, user);
 
             if(newsEmotionOptional.isEmpty()){
                 return;
@@ -95,7 +95,7 @@ public class UserEmotionService {
             return;
         }
 
-        final Optional<NewsTrustEmotion> newsTrustEmotionOptional = newsTrustEmotionRepository.findByUser(user);
+        final Optional<NewsTrustEmotion> newsTrustEmotionOptional = newsTrustEmotionRepository.findByRefinedNewsAndUser(news, user);
 
         if(newsTrustEmotionOptional.isEmpty()){
             return;

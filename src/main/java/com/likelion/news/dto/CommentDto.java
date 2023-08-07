@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 public class CommentDto {
 
+    private Long id;
     private String expertUid;
 
     private String expertProfileImage;
@@ -28,6 +29,7 @@ public class CommentDto {
 
         User expert = entity.getUser();
         return CommentDto.builder()
+                .id(entity.getCommentId())
                 .expertUid(expert.getUid())
                 .expertProfileImage(expert.getProfileImage())
                 .expertName(expert.getName())
