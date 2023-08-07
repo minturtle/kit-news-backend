@@ -19,7 +19,7 @@ public class ExpertInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long expertInfoId;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id")
     private User user;
 
