@@ -7,14 +7,14 @@ import com.likelion.news.entity.ExpertInfo;
 
 import com.likelion.news.entity.enums.ExpertState;
 import com.likelion.news.entity.enums.UserType;
-import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.NotFoundException.NoExpertException;
 import com.likelion.news.repository.ExpertInfoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,8 +30,8 @@ public class AdminService {
     private static final String APPROVE = "approve";
     private static final String REJECT = "reject";
 
-    public List<ExpertRegistrationRequestDto> getRequestedExpertRegistrations(Pageable pageable){
-        Page<ExpertInfo> expertInfos = expertInfoRepository.findByState(ExpertState.PENDING, pageable);
+    public List<ExpertRegistrationRequestDto> getRequestedExpertRegistrations(int from, int size){
+        Page<ExpertInfo> expertInfos = expertInfoRepository.findByState(ExpertState.PENDING, PageRequest.of(from / size, size, Sort.by("expertInfoId").descending()));
 
         return expertInfos.stream().map(expertInfo -> ExpertRegistrationRequestDto.builder()
                         .userName(expertInfo.getUser().getName())

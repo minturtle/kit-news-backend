@@ -117,6 +117,10 @@ public class NewsController {
 
     }
 
+    @Operation(
+            summary = "뉴스의 전문가 댓글을 작성하는 API",
+            description = "전문가 댓글을 작성하는 API입니다. news의 ID값을 필요로 합니다." +
+                    "사용자가 전문가 or 어드민이어야 합니다. ")
     @PostMapping(value="/{newsId}/comment")
     public ResponseEntity<Void> writeComment(ExpertCommentDto comment,
                                              @PathVariable Long newsId){
@@ -125,6 +129,10 @@ public class NewsController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Operation(
+            summary = "뉴스의 전문가 댓글을 수정하는 API",
+            description = "전문가 댓글을 수정하는 API입니다. news의 ID값과 댓글의 Id값이 필요합니다." +
+                    "사용자가 전문가 or 어드민이어야 하고, 본인이 작성한 댓글이어야합니다. ")
     @PatchMapping(value="/{newsId}/comment/{commentId}")
     public ResponseEntity<Void> updateComment(ExpertCommentDto comment,
                                               @PathVariable Long newsId,
@@ -134,7 +142,10 @@ public class NewsController {
         return ResponseEntity.ok().build();
     }
 
-
+    @Operation(
+            summary = "뉴스의 전문가 댓글을 삭제하는 API",
+            description = "전문가 댓글을 삭제하는 API입니다. news의 ID값과 댓글의 Id값이 필요합니다." +
+                    "사용자가 전문가 or 어드민이어야 하고, 본인이 작성한 댓글이어야합니다. ")
     @DeleteMapping(value="/{newsId}/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long newsId,
                                               @PathVariable Long commentId){
