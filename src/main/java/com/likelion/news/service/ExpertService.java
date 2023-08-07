@@ -6,6 +6,7 @@ import com.likelion.news.dto.ExpertCommentDto;
 import com.likelion.news.dto.ExpertRequest;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.ExpertState;
+import com.likelion.news.entity.enums.UserType;
 import com.likelion.news.exception.NotFoundException.NoNewsException;
 import com.likelion.news.exception.NotFoundException.NoUserException;
 import com.likelion.news.exception.NotFoundException.NoCommentException;
@@ -108,7 +109,7 @@ public class ExpertService {
     }
 
     public void writeComment(String uid, Long newsId, ExpertCommentDto commentDto){
-        User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
+        User findUser = checkExpertRole(uid);
         RefinedNews refinedNews = refinedNewsRepository.findById(newsId).orElseThrow(NoNewsException::new);
 
         Comment newComment = Comment.builder()
@@ -120,14 +121,16 @@ public class ExpertService {
         commentRepository.save(newComment);
     }
 
-    public void updateComment(String uid, Long commentId, Long newsId, ExpertCommentDto commentDto){
-        Comment findComment = checkCommentAuth(uid, commentId, newsId);
+    public void updateComment(String uid,  Long newsId, Long commentId, ExpertCommentDto commentDto){
+        User findUser = checkExpertRole(uid);
+        Comment findComment = checkCommentAuth(findUser, commentId, newsId);
         findComment.setContent(commentDto.getContent());
 
     }
 
     public void deleteComment(String uid, Long newsId, Long commentId){
-        Comment findComment = checkCommentAuth(uid, commentId, newsId);
+        User findUser = checkExpertRole(uid);
+        Comment findComment = checkCommentAuth(findUser, commentId, newsId);
         commentRepository.delete(findComment);
     }
 
@@ -136,13 +139,12 @@ public class ExpertService {
      * @author: parkjunha
      * @description: 수정, 삭제하고자 하는 댓글이 해당 뉴스, 유저 정보와 일치하는지 검사하는 메서드
      *
-     * @param: String 사용자 uid
+     * @param: User 찾은 유저
      * @param: Long 댓글 id
      * @param: Long 뉴스 id
      * @return: Comment 검증된 댓글 반환
      */
-    private Comment checkCommentAuth(String uid, Long commentId, Long newsId) {
-        User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
+    private Comment checkCommentAuth(User findUser, Long commentId, Long newsId) {
         RefinedNews findNews = refinedNewsRepository.findById(newsId).orElseThrow(NoNewsException::new);
         Comment findComment = commentRepository.findById(commentId).orElseThrow(NoCommentException::new);
 
@@ -154,6 +156,21 @@ public class ExpertService {
             throw new UnAuthorizedException("댓글 작성자와 동일한 유저가 아닙니다.");
         }
         return findComment;
+    }
+
+    /*
+     * @methodName: checkExpertRole
+     * @author: parkjunha
+     * @description: 해당 사용자가 전문가인지 체크하는 메서드
+     * @param: String 사용자 uid
+     * @return: User uid로 찾은 유저
+     */
+    private User checkExpertRole(String uid) {
+        User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
+        if (!findUser.getUserType().equals(UserType.ROLE_EXPERT) && !findUser.getUserType().equals(UserType.ROLE_ADMIN)){
+            throw new UnAuthorizedException("전문가 or 어드민이 아닙니다.");
+        }
+        return findUser;
     }
 
 }
