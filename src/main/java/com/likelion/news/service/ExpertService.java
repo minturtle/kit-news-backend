@@ -54,7 +54,7 @@ public class ExpertService {
                 .businessType(req.getBusinessType())
                 .company(req.getCompany())
                 .education(req.getEducation())
-                .expertState(ExpertState.PENDING)
+                .state(ExpertState.PENDING)
                 .build();
 
         List<Certification> certificationLinks = createCertificationLinks(images, expertInfo);

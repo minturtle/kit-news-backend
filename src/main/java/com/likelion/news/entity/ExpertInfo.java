@@ -2,11 +2,9 @@ package com.likelion.news.entity;
 
 import com.likelion.news.entity.enums.ExpertState;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +12,8 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Getter
+@Setter
 public class ExpertInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,10 @@ public class ExpertInfo {
     private String education;
 
     @Enumerated(EnumType.STRING)
-    private ExpertState expertState;
+    private ExpertState state;
+
+    @OneToMany(mappedBy = "expertInfo", cascade = CascadeType.ALL)
+    private List<Certification> certifications;
 
     @Override
     public boolean equals(Object o) {

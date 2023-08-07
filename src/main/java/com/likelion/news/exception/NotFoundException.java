@@ -20,4 +20,10 @@ public class NotFoundException extends RuntimeException{
             super("해당 댓글을 찾을 수 없습니다.");
         }
     }
+
+    public static class NoExpertException extends NotFoundException {
+        public NoExpertException() {
+            super("해당 전문가 정보를 찾을 수 없습니다.");
+        }
+    }
 }
