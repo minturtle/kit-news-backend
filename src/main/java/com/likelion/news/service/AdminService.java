@@ -6,6 +6,7 @@ import com.likelion.news.entity.Certification;
 import com.likelion.news.entity.ExpertInfo;
 
 import com.likelion.news.entity.enums.ExpertState;
+import com.likelion.news.entity.enums.UserType;
 import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.NotFoundException.NoExpertException;
 import com.likelion.news.repository.ExpertInfoRepository;
@@ -64,6 +65,10 @@ public class AdminService {
         }
 
         findExpertReq.setState(newState);
+
+        if (newState.equals(ExpertState.APPROVED)) {
+            findExpertReq.getUser().setUserType(UserType.ROLE_EXPERT);
+        }
 
         return newState.equals(ExpertState.APPROVED);
     }
