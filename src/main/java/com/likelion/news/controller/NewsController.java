@@ -2,6 +2,7 @@ package com.likelion.news.controller;
 
 
 import com.likelion.news.dto.CommentDto;
+import com.likelion.news.dto.NewsClippingDto;
 import com.likelion.news.dto.NewsEmotionDto;
 import com.likelion.news.dto.NewsTrustEmotionDto;
 import com.likelion.news.entity.enums.CommentEmotionType;
@@ -13,6 +14,7 @@ import com.likelion.news.dto.response.NewsResponse;
 import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.ExceptionMessages;
+import com.likelion.news.service.NewsClippingService;
 import com.likelion.news.service.NewsService;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,7 +32,7 @@ import java.util.Optional;
 public class NewsController {
 
     private final NewsService newsService;
-
+    private final NewsClippingService newsClippingService;
     @GetMapping("/list")
     public ApiResponse<List<NewsResponse>> getNewsList(
             @RequestParam @NotNull @Positive Integer from,
@@ -94,6 +96,40 @@ public class NewsController {
     }
 
 
+    @GetMapping("/clip")
+    public ApiResponse<List<NewsClippingDto>> getNewsClipping(){
+        Optional<String> uid = getUid();
+
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
+        }
+
+        List<NewsClippingDto> newsClipList = newsClippingService.getNewsClipping(uid.get());
+
+
+        return ApiResponse.<List<NewsClippingDto>>builder()
+                .data(newsClipList)
+                .build();
+
+    }
+
+    @PostMapping("/clip/{newsId}")
+    public void newsClipped(@PathVariable Long newsId){
+        Optional<String> uid = getUid();
+
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
+        }
+
+
+        newsClippingService.addNewsClip(uid.get(), newsId);
+    }
+
+
+
+
     @PostMapping("/emotion/news/{newsId}/{emotionClass}/{emotionType}")
     public void emotionClicked(@PathVariable Long newsId, @PathVariable EmotionClass emotionClass, @PathVariable String emotionType){
         final Optional<String> uid = getUid();
@@ -117,6 +153,21 @@ public class NewsController {
         }
 
         newsService.saveCommentEmotion(uid.get(), commentId, emotionType);
+    }
+
+    @DeleteMapping("/clip/{clipId}")
+    public void deleteClip(@PathVariable Long clipId){
+        final Optional<String> uid = getUid();
+
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
+        }
+
+
+        newsClippingService.deleteNewsClip(uid.get(), clipId);
+
+
     }
 
     @DeleteMapping("/emotion/news/{emotionClass}")

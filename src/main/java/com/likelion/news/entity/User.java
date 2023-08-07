@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -41,6 +43,11 @@ public class User {
     @CreationTimestamp
     @Builder.Default
     private LocalDateTime createdTime = LocalDateTime.now();
+
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
+    @Builder.Default
+    private List<NewsClipping> newsClippingList = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
