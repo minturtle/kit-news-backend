@@ -160,8 +160,8 @@ public class NewsController {
             summary = "뉴스의 감정표현 갯수, 신뢰표현 갯수 조회 API",
             description = "news의 감정표현, 신뢰표현 갯수를 조회하는 API로, JWT로 사용자 인증시 사용자가 뉴스에 대해 감정표현, 신뢰표현을 눌렀는지 알 수 있습니다."
     )
-    @GetMapping("/emotions")
-    public ApiResponse<NewsEmotionResponse> getNewsEmotionsByNews(@RequestParam @NotNull Long newsId){
+    @GetMapping("/{newsId}/emotions")
+    public ApiResponse<NewsEmotionResponse> getNewsEmotionsByNews(@PathVariable Long newsId){
         Optional<String> uid = getUid();
 
 

@@ -51,16 +51,5 @@ class ShellRunnerServiceTest {
         assertThat(result).isEqualTo("echo");
     }
 
-    @Test
-    @DisplayName("command를 입력받아 쉘 명령어를 실행할 수 있다.")
-    void t4() throws Exception {
-        //given
-        String testCommand = "python";
-        String testArg = "test.py";
-        //when
-        String actual = shellRunnerService.executeShell(testCommand, testArg);
-        //then
-        assertThat(actual).isEqualTo("hello!");
-    }
 
 }

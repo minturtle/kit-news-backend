@@ -1,10 +1,7 @@
 package com.likelion.news.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.likelion.news.dto.response.ApiResponse;
-import com.likelion.news.dto.response.CommentResponse;
-import com.likelion.news.dto.response.NewsEmotionResponse;
-import com.likelion.news.dto.response.NewsResponse;
+import com.likelion.news.dto.response.*;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.*;
 import com.likelion.news.repository.*;
@@ -58,6 +55,7 @@ class NewsControllerIntegrationTest {
 
     private RefinedNews refinedNews;
 
+    private Comment testComment;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -88,10 +86,9 @@ class NewsControllerIntegrationTest {
                 .build();
         //when & then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/news/list")
+                MockMvcRequestBuilders.get("/api/news/list/IT_SCIENCE")
                 .param("from", "0")
-                .param("size", "10")
-                .param("category", ArticleCategory.IT_SCIENCE.name()))
+                .param("size", "10"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(expectedRespBody)));
@@ -108,10 +105,9 @@ class NewsControllerIntegrationTest {
 
         //when & then
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/news/list")
+                        MockMvcRequestBuilders.get("/api/news/list/IT_SCIENCE")
                                 .param("from", "0")
-                                .param("size", "10")
-                                .param("category", ArticleCategory.IT_SCIENCE.name()))
+                                .param("size", "10"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(expectedRespBody)));
@@ -127,10 +123,12 @@ class NewsControllerIntegrationTest {
         setUpData();
 
         CommentResponse expectedCommentResp = CommentResponse.builder()
+                .commentId(testComment.getCommentId())
                 .expertUid(testExpert.getUid())
                 .expertName(testExpert.getName())
                 .content("금오공대 ㅇㅈ합니다.")
-                .emotionCounts(Map.of(CommentEmotionType.LIKE, 1))
+                .emotionCounts(Map.of(CommentEmotionType.LIKE, 1, CommentEmotionType.DISLIKE, 0))
+                .userEmotionInfo(UserEmotionInfo.<CommentEmotionType>builder().isUserClicked(false).build())
                 .build();
 
 
@@ -138,7 +136,7 @@ class NewsControllerIntegrationTest {
                 .data(List.of(expectedCommentResp)).build();
         //when & then
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/api/news/comment")
+                MockMvcRequestBuilders.get(String.format("/api/news/%d/comment", refinedNews.getRefinedNewsId()))
                         .param("newsId", String.valueOf(refinedNews.getRefinedNewsId()))
         )
         .andDo(print())
@@ -156,13 +154,16 @@ class NewsControllerIntegrationTest {
         NewsEmotionResponse expectedEmotionResp = NewsEmotionResponse.builder()
                 .newsId(refinedNews.getRefinedNewsId())
                 .emotionCounts(Map.of(NewsEmotionType.LIKE, 2, NewsEmotionType.DISLIKE, 1))
+                .trustEmotionCounts(Map.of(NewsTrustEmotionType.TRUSTWORTHY, 0, NewsTrustEmotionType.SUSPICIOUS, 0))
+                .userNewsEmotionInfo(UserEmotionInfo.<NewsEmotionType>builder().isUserClicked(false).build())
+                .userNewsTrustEmotionInfo(UserEmotionInfo.<NewsTrustEmotionType>builder().isUserClicked(false).build())
                 .build();
 
         ApiResponse<NewsEmotionResponse> expectedRespBody = ApiResponse.<NewsEmotionResponse>builder()
                 .data(expectedEmotionResp).build();
         //when & then
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/api/news/emotions")
+                        MockMvcRequestBuilders.get(String.format("/api/news/%d/emotions", refinedNews.getRefinedNewsId()))
                                 .param("newsId", String.valueOf(refinedNews.getRefinedNewsId()))
                 )
                 .andDo(print())
@@ -225,7 +226,7 @@ class NewsControllerIntegrationTest {
                 .user(testUser3)
                 .build();
 
-        Comment testComment = Comment.builder()
+        testComment = Comment.builder()
                 .refinedNews(refinedNews)
                 .user(testExpert)
                 .content("금오공대 ㅇㅈ합니다.").build();

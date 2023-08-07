@@ -44,7 +44,14 @@ public class CommentResponse{
                 .build();
 
 
+
+
         // Comment 감정의 갯수 측정
+        for(CommentEmotionType type : CommentEmotionType.values()){
+            res.getEmotionCounts().put(type, 0);
+        }
+
+
         for(CommentDto.CommentEmotionDto commentEmotion :  comment.getCommentEmotions()){
             Map<CommentEmotionType, Integer> commentEmotionCounts = res.getEmotionCounts();
             countCommentEmotion(commentEmotion, commentEmotionCounts);
@@ -92,9 +99,6 @@ public class CommentResponse{
 
     private static void countCommentEmotion(CommentDto.CommentEmotionDto commentEmotion, Map<CommentEmotionType, Integer> commentEmotionCounts) {
 
-        if(!commentEmotionCounts.containsKey(commentEmotion.getEmotionType())){
-            commentEmotionCounts.put(commentEmotion.getEmotionType(), 0);
-        }
         Integer prevCount = commentEmotionCounts.get(commentEmotion.getEmotionType());
 
         commentEmotionCounts.put(commentEmotion.getEmotionType(), prevCount+1);
