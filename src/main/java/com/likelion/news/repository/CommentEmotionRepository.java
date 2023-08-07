@@ -1,5 +1,6 @@
 package com.likelion.news.repository;
 
+import com.likelion.news.entity.Comment;
 import com.likelion.news.entity.CommentEmotion;
 import com.likelion.news.entity.User;
 import org.springframework.data.repository.CrudRepository;
@@ -11,4 +12,6 @@ import java.util.Optional;
 public interface CommentEmotionRepository extends CrudRepository<CommentEmotion, Long> {
 
     Optional<CommentEmotion> findByUser(User user);
+
+    Optional<CommentEmotion> findByCommentAndUser(Comment comment, User user);
 }
