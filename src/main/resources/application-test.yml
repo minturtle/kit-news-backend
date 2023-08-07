@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+clova:
+  url: "http://test-url.org"
+  client:
+    id: "1234"
+    secret: "6789"
+  summary:
+    size: 5
+
+crawler:
+  shell:
+    execute-command: python
+    args:
+      test.py
