@@ -46,6 +46,10 @@ public class NewsService {
 
     }
 
+    public List<RefinedNewsReadDto> getNewsByTitle(String title) {
+        return refinedNewsRepository.findAllByTitle(title).stream().map(RefinedNewsReadDto::toDto).toList();
+    }
+
     /**
     * @methodName getRandomNews
     * @author : Minseok Kim
@@ -213,5 +217,6 @@ public class NewsService {
         }
         return randomNumbers;
     }
+
 
 }
