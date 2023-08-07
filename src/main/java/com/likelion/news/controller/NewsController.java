@@ -1,10 +1,7 @@
 package com.likelion.news.controller;
 
 
-import com.likelion.news.dto.CommentDto;
-import com.likelion.news.dto.NewsClippingDto;
-import com.likelion.news.dto.NewsEmotionDto;
-import com.likelion.news.dto.NewsTrustEmotionDto;
+import com.likelion.news.dto.*;
 import com.likelion.news.entity.enums.CommentEmotionType;
 import com.likelion.news.entity.enums.EmotionClass;
 import com.likelion.news.dto.response.ApiResponse;
@@ -14,6 +11,7 @@ import com.likelion.news.dto.response.NewsResponse;
 import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.ExceptionMessages;
+import com.likelion.news.service.ExpertService;
 import com.likelion.news.service.NewsClippingService;
 import com.likelion.news.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +19,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +36,7 @@ public class NewsController {
 
     private final NewsService newsService;
     private final NewsClippingService newsClippingService;
-
+    private final ExpertService expertService;
 
 
     @Operation(
@@ -95,7 +95,7 @@ public class NewsController {
             summary = "뉴스의 전문가 댓글을 조회하는 API",
             description = "전문가 댓글을 조회하는 API입니다. news의 ID값을 필요로하며, 이에 해당하는 댓글을 조회합니다." +
                     "또 JWT로 사용자 인증에 성공시 사용자가 전문가 댓글에 감정표현(좋아요 등..)을 눌렀는지도 알 수 있습니다.")
-    @GetMapping("/comment/{newsId}")
+    @GetMapping("/{newsId}/comment")
     public ApiResponse<List<CommentResponse>> getCommentsByNewsId(@PathVariable Long newsId){
         Optional<String> uid = getUid();
 
@@ -115,6 +115,32 @@ public class NewsController {
                 .data(commentDtoList.stream().map(c->CommentResponse.of(c, uid.get())).toList())
                 .build();
 
+    }
+
+    @PostMapping(value="/{newsId}/comment")
+    public ResponseEntity<Void> writeComment(ExpertCommentDto comment,
+                                             @PathVariable Long newsId){
+        String uid = getUid().get();
+        expertService.writeComment(uid, newsId, comment);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PatchMapping(value="/{newsId}/comment/{commentId}")
+    public ResponseEntity<Void> updateComment(ExpertCommentDto comment,
+                                              @PathVariable Long newsId,
+                                              @PathVariable Long commentId){
+        String uid = getUid().get();
+        expertService.updateComment(uid, newsId, commentId, comment);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @DeleteMapping(value="/{newsId}/comment/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long newsId,
+                                              @PathVariable Long commentId){
+        String uid = getUid().get();
+        expertService.deleteComment(uid, newsId, commentId);
+        return  ResponseEntity.ok().build();
     }
 
 
