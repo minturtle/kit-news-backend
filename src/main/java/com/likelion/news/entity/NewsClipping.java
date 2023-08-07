@@ -17,8 +17,10 @@ public class NewsClipping {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clipped_news_id")
     private RefinedNews clippedNews;
 }
