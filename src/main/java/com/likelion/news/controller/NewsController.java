@@ -38,6 +38,30 @@ public class NewsController {
     private final NewsClippingService newsClippingService;
 
 
+
+    @Operation(
+            summary = "뉴스 제목 검색 API",
+            description = "뉴스를 제목으로 검색하는 API입니다. 모든 카테고리에 대해 검색되어 결과가 나타납니다."
+    )
+    @GetMapping("/search/title/{title}")
+    public ApiResponse<List<NewsResponse>> findNewsByTitle(@PathVariable String title){
+        final List<NewsResponse> newsResponses = newsService.getNewsByTitle(title)
+                .stream().map(news -> NewsResponse.builder()
+                        .newsId(news.getId())
+                        .link(news.getLink())
+                        .title(news.getTitle())
+                        .content(news.getContent())
+                        .summary(news.getSummary())
+                        .articleCategory(news.getArticleCategory())
+                        .build()
+                ).toList();
+
+        return ApiResponse.<List<NewsResponse>>builder()
+                .data(newsResponses)
+                .build();
+    }
+
+
     @Operation(
             summary = "뉴스 리스트 조회 API",
             description = "요약까지 완료된 뉴스 리스트를 가져오는 API입니다. 뉴스의 카테고리 별로 검색이 가능하며, from, size의 디폴트 값은 각각 0, 10입니다.")
