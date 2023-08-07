@@ -8,7 +8,6 @@ import com.likelion.news.entity.ExpertInfo;
 import com.likelion.news.entity.enums.ExpertState;
 import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.NotFoundException.NoExpertException;
-import com.likelion.news.repository.CertificationRepository;
 import com.likelion.news.repository.ExpertInfoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +45,8 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    public boolean decisionRegistrations(String decision, ExpertRegistrationRequestDto req){
-        ExpertInfo findExpertReq = expertInfoRepository.findByUserUid(req.getUid());
+    public boolean decisionRegistrations(String decision, String uid){
+        ExpertInfo findExpertReq = expertInfoRepository.findByUserUid(uid);
 
         if (findExpertReq == null) {
             throw new NoExpertException();
@@ -61,7 +60,7 @@ public class AdminService {
         ExpertState newState = decisionMap.get(decision.toLowerCase());
 
         if (newState == null) {
-            throw new ClientException("Decision 반드시 'approve' or 'reject' 값 이어야 합니다.");
+            throw new ClientException("Decision은 반드시 'approve' or 'reject' 값 이어야 합니다.");
         }
 
         findExpertReq.setState(newState);

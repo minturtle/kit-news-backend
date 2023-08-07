@@ -16,15 +16,15 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
 
-    @GetMapping("requested-experts")
+    @GetMapping("requested")
     public List<ExpertRegistrationRequestDto> getRequestedExpertRegistrations(Pageable pageable) {
         return adminService.getRequestedExpertRegistrations(pageable);
     }
 
-    @PatchMapping("requested-experts/{decision}")
+    @PatchMapping("requested/{uid}/{decision}")
     public ResponseEntity<String> decisionRegistrations(@PathVariable String decision,
-                                                        @RequestBody ExpertRegistrationRequestDto req) {
-        boolean isApproved = adminService.decisionRegistrations(decision, req);
+                                                        @PathVariable String uid) {
+        boolean isApproved = adminService.decisionRegistrations(decision, uid);
 
         String message = isApproved ? "승인되었습니다" : "거절되었습니다";
         return ResponseEntity.status(HttpStatus.OK).body(message);

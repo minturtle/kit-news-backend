@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class ExpertCommentDto {
-    String content;
+    private String content;
 }
