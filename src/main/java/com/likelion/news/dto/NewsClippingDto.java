@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 public class NewsClippingDto {
 
+    private Long clipId;
     private Long newsId;
     private String uid;
 
@@ -18,6 +19,7 @@ public class NewsClippingDto {
 
     public static NewsClippingDto toDto(NewsClipping entity){
         return NewsClippingDto.builder()
+                .clipId(entity.getId())
                 .newsId(entity.getClippedNews().getRefinedNewsId())
                 .newsTitle(entity.getClippedNews().getCrawledNews().getArticleTitle())
                 .newsSummary(entity.getClippedNews().getArticleSummary())

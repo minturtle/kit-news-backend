@@ -105,7 +105,7 @@ public class NewsController {
             throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
         }
 
-        List<NewsClippingDto> newsClipList = newsClippingService.getNewsClipping(uid);
+        List<NewsClippingDto> newsClipList = newsClippingService.getNewsClipping(uid.get());
 
 
         return ApiResponse.<List<NewsClippingDto>>builder()
@@ -113,6 +113,21 @@ public class NewsController {
                 .build();
 
     }
+
+    @PostMapping("/clip/{newsId}")
+    public void newsClipped(@PathVariable Long newsId){
+        Optional<String> uid = getUid();
+
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
+        }
+
+
+        newsClippingService.addNewsClip(uid.get(), newsId);
+    }
+
+
 
 
     @PostMapping("/emotion/news/{newsId}/{emotionClass}/{emotionType}")
@@ -138,6 +153,21 @@ public class NewsController {
         }
 
         newsService.saveCommentEmotion(uid.get(), commentId, emotionType);
+    }
+
+    @DeleteMapping("/clip/{clipId}")
+    public void deleteClip(@PathVariable Long clipId){
+        final Optional<String> uid = getUid();
+
+
+        if(uid.isEmpty()){
+            throw new ClientException(ExceptionMessages.LOGIN_NEED.getMessage());
+        }
+
+
+        newsClippingService.deleteNewsClip(uid.get(), clipId);
+
+
     }
 
     @DeleteMapping("/emotion/news/{emotionClass}")
