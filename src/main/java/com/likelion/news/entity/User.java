@@ -19,6 +19,7 @@ import java.util.Objects;
 @Builder
 @Table(name = "users")
 @Getter
+@Setter
 public class User {
 
     @Id
