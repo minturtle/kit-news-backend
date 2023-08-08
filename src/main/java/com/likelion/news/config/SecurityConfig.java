@@ -1,5 +1,6 @@
 package com.likelion.news.config;
 
+import com.likelion.news.filter.ExceptionHandlerFilter;
 import com.likelion.news.filter.JwtAuthenticationFilter;
 import com.likelion.news.service.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class SecurityConfig {
     private final PrincipalOauth2UserService oauth2UserService;
     private final AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final CorsConfigurationSource corsConfigurationSource;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,6 +53,7 @@ public class SecurityConfig {
 
                 .logout(config->config.clearAuthentication(true).deleteCookies("JSESSIONID"))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, jwtAuthenticationFilter.getClass())
                 .build();
     }
 
