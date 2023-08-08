@@ -35,7 +35,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/login/**").permitAll()
                             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**" ).permitAll()
                             .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                            .anyRequest().permitAll();
+                            .anyRequest().authenticated();
 
                 })
                 .oauth2Login(oauth2Login->{
