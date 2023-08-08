@@ -5,6 +5,8 @@ import com.likelion.news.dto.ClovaSummaryRequest;
 import com.likelion.news.dto.RefinedNewsContentDto;
 import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.enums.ArticleCategory;
+import com.likelion.news.exception.ExceptionMessages;
+import com.likelion.news.exception.InternalServerException;
 import com.likelion.news.service.ClovaSummaryApiCallService;
 import com.likelion.news.service.NewsService;
 import com.likelion.news.service.ShellRunnerService;
@@ -37,53 +39,64 @@ public class CrawlerScheduler {
      * <a href="https://m.blog.naver.com/deeperain/221609802306">...</a>
      * @return 함수의 Return 값은 없으나, 하루의 4개의 뉴스를 요약한 후 DB에 저장합니다.
      */
-    @Scheduled(cron = "0 00 18 * * *")
+    @Scheduled(cron = "0 25 17 * * *")
     public void runCrawling(){
-        log.info("Crawler Scheduler Started");
-        String command = createCommand();
+        try{
+            log.info("Crawler Scheduler Started");
+            String command = createCommand();
 
-        shellRunnerService.executeShell(command);
+            shellRunnerService.executeShell(command);
+            log.info("Crawler Scheduler Ended");
+        }catch (Exception e){
+            throw new InternalServerException("Summary API 호출중 오류가 발생했습니다.",e);
+        }
     }
 
-    @Scheduled(cron = "0 10 18 * * *")
+    @Scheduled(cron = "0 30 17 * * *")
     public void runSummary(){
-        log.info("Summary Scheduler Started");
-        Integer summarizationSize = env.getProperty("clova.summary.size", Integer.class);
+        try{
+            log.info("Summary Scheduler Started");
+            Integer summarizationSize = env.getProperty("clova.summary.size", Integer.class);
 
-        // 모든 카테고리에서 Summarization 진행
-        ArticleCategory[] articleTypes = ArticleCategory.values();
-
-
-        List<CrawledNews> newsList
-                = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.of(2023,8,2));
+            // 모든 카테고리에서 Summarization 진행
+            ArticleCategory[] articleTypes = ArticleCategory.values();
 
 
-        List<RefinedNewsContentDto> resultList = new ArrayList<>();
-
-        // 구해온 모든 news에 대해 요약 진행
-        for(CrawledNews news : newsList){
-            ClovaSummaryRequest clovaSummaryRequest
-                    = clovaService.createDefaultNewsRequest(news.getArticleTitle(), news.getArticleContent());
+            List<CrawledNews> newsList
+                    = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.of(2023,8,2));
 
 
-            String summary = clovaService.getSummary(clovaSummaryRequest);
+            List<RefinedNewsContentDto> resultList = new ArrayList<>();
 
-            RefinedNewsContentDto result = RefinedNewsContentDto.builder()
-                    .crawledNews(news)
-                    .summary(summary)
-                    .build();
+            // 구해온 모든 news에 대해 요약 진행
+            for(CrawledNews news : newsList){
+                ClovaSummaryRequest clovaSummaryRequest
+                        = clovaService.createDefaultNewsRequest(news.getArticleTitle(), news.getArticleContent());
 
-            resultList.add(result);
 
-            log.info("Summary Complete : ID : {}", news.getCrawledNewsId());
+                String summary = clovaService.getSummary(clovaSummaryRequest);
+
+                RefinedNewsContentDto result = RefinedNewsContentDto.builder()
+                        .crawledNews(news)
+                        .summary(summary)
+                        .build();
+
+                resultList.add(result);
+
+                log.info("Summary Complete : ID : {}", news.getCrawledNewsId());
+            }
+
+            // 요약 완료된 뉴스를 DB에 저장
+            newsService.saveRefinedNewsList(resultList);
+            log.info("Summary Scheduler Ended");
+            }catch (Exception e){
+            throw new InternalServerException("Summary API 호출중 오류가 발생했습니다.",e);
         }
 
-        // 요약 완료된 뉴스를 DB에 저장
-        newsService.saveRefinedNewsList(resultList);
-        log.info("Summary Scheduler Ended");
     }
 
     private String createCommand() {
+
         String executeCommand = env.getProperty("crawler.shell.execute-command");
         List<String> args = env.getProperty("crawler.shell.args", List.class);
 
