@@ -39,7 +39,7 @@ public class CrawlerScheduler {
      * <a href="https://m.blog.naver.com/deeperain/221609802306">...</a>
      * @return 함수의 Return 값은 없으나, 하루의 4개의 뉴스를 요약한 후 DB에 저장합니다.
      */
-    @Scheduled(cron = "0 25 17 * * *")
+    @Scheduled(cron = "0 00 18 * * *")
     public void runCrawling(){
         try{
             log.info("Crawler Scheduler Started");
@@ -52,7 +52,7 @@ public class CrawlerScheduler {
         }
     }
 
-    @Scheduled(cron = "0 30 17 * * *")
+    @Scheduled(cron = "0 20 18 * * *")
     public void runSummary(){
         try{
             log.info("Summary Scheduler Started");
@@ -63,7 +63,7 @@ public class CrawlerScheduler {
 
 
             List<CrawledNews> newsList
-                    = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.of(2023,8,2));
+                    = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.now());
 
 
             List<RefinedNewsContentDto> resultList = new ArrayList<>();

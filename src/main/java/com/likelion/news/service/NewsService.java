@@ -10,6 +10,7 @@ import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.ExceptionMessages;
 import com.likelion.news.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,7 @@ import java.util.stream.StreamSupport;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class NewsService {
 
 
@@ -70,6 +72,7 @@ public class NewsService {
         LocalDateTime endDateTime = articleDate.plusDays(1).atStartOfDay();
         List<CrawledNews> newsList = crawledNewsRepository
                 .findAllByArticleCategoryAndArticleDateIs(articleType, startDateTime, endDateTime);
+
 
         if(newsList.isEmpty()){
             return List.of();
