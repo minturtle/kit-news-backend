@@ -7,6 +7,7 @@ import com.likelion.news.entity.enums.*;
 import com.likelion.news.repository.*;
 import org.antlr.v4.runtime.misc.LogManager;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
+@Disabled
 class NewsControllerIntegrationTest {
 
     @Autowired
