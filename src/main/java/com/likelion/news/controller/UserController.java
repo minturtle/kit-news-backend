@@ -44,7 +44,7 @@ public class UserController {
     )
     @PostMapping(value = "/register/expert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> registerExpert(ExpertRequest req,
-            @RequestParam(value = "images", required = false) MultipartFile[] images) throws IOException {
+            @RequestPart(value = "images", required = false) MultipartFile[] images) throws IOException {
         String uid = getUid().get();
         List<MultipartFile> imageList = Collections.arrayToList(images);
         expertService.registerExpert(uid, req, imageList);
