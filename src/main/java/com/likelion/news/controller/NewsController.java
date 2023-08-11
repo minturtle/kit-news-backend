@@ -2,6 +2,7 @@ package com.likelion.news.controller;
 
 
 import com.likelion.news.dto.*;
+import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.enums.CommentEmotionType;
 import com.likelion.news.entity.enums.EmotionClass;
 import com.likelion.news.dto.response.ApiResponse;
@@ -11,6 +12,8 @@ import com.likelion.news.dto.response.NewsResponse;
 import com.likelion.news.entity.enums.ArticleCategory;
 import com.likelion.news.exception.ClientException;
 import com.likelion.news.exception.ExceptionMessages;
+import com.likelion.news.exception.InternalServerException;
+import com.likelion.news.service.ClovaSummaryApiCallService;
 import com.likelion.news.service.ExpertService;
 import com.likelion.news.service.NewsClippingService;
 import com.likelion.news.service.NewsService;
@@ -25,6 +28,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +42,7 @@ public class NewsController {
     private final NewsService newsService;
     private final NewsClippingService newsClippingService;
     private final ExpertService expertService;
-
+    private final ClovaSummaryApiCallService clovaService;
 
     @Operation(
             summary = "뉴스 제목 검색 API",
@@ -152,6 +157,51 @@ public class NewsController {
         String uid = getUid().get();
         expertService.deleteComment(uid, newsId, commentId);
         return  ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "백엔드 개발자용 수동 Summary API",
+            description = "해당일에 Summary가 진행되지 않았을 때, 백엔드 개발자가 호출하는 메서드입니다. 백엔드 개발자는 DB에 summary가 없다면, 호출해주시기 바랍니다."
+    )
+    @PostMapping("/summary/manual")
+    public void manualSummarization(
+            @RequestParam Integer summarizationSize,
+            @RequestParam LocalDate localDate
+    ){
+        try{
+            // 모든 카테고리에서 Summarization 진행
+            ArticleCategory[] articleTypes = ArticleCategory.values();
+
+
+            List<CrawledNews> newsList
+                    = newsService.getRandomNews(summarizationSize, List.of(articleTypes), localDate);
+
+
+            List<RefinedNewsContentDto> resultList = new ArrayList<>();
+
+            // 구해온 모든 news에 대해 요약 진행
+            for(CrawledNews news : newsList){
+                ClovaSummaryRequest clovaSummaryRequest
+                        = clovaService.createDefaultNewsRequest(news.getArticleTitle(), news.getArticleContent());
+
+
+                String summary = clovaService.getSummary(clovaSummaryRequest);
+
+                RefinedNewsContentDto result = RefinedNewsContentDto.builder()
+                        .crawledNews(news)
+                        .summary(summary)
+                        .build();
+
+                resultList.add(result);
+
+            }
+
+            // 요약 완료된 뉴스를 DB에 저장
+            newsService.saveRefinedNewsList(resultList);
+        }catch (Exception e){
+            throw new InternalServerException("Summary API 호출중 오류가 발생했습니다.",e);
+        }
+
     }
 
 
@@ -331,4 +381,7 @@ public class NewsController {
 
         return Optional.empty();
     }
+
+
+
 }
