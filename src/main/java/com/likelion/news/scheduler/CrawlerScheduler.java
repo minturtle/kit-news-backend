@@ -63,7 +63,7 @@ public class CrawlerScheduler {
 
 
             List<CrawledNews> newsList
-                    = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.of(2023,8,2));
+                    = newsService.getRandomNews(summarizationSize, List.of(articleTypes), LocalDate.now());
 
 
             List<RefinedNewsContentDto> resultList = new ArrayList<>();
@@ -90,8 +90,8 @@ public class CrawlerScheduler {
             newsService.saveRefinedNewsList(resultList);
             log.info("Summary Scheduler Ended");
             }catch (Exception e){
-            throw new InternalServerException("Summary API 호출중 오류가 발생했습니다.",e);
-        }
+                throw new InternalServerException("Summary API 호출중 오류가 발생했습니다.",e);
+            }
 
     }
 
