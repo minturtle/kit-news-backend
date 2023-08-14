@@ -35,6 +35,10 @@ public class User {
 
     private String uid;
 
+    private String email;
+
+    private String nickname;
+
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
