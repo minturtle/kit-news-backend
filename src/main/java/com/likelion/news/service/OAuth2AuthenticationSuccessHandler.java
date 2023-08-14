@@ -57,7 +57,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.setHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(resBody));
 
-
+        getRedirectStrategy().sendRedirect(request, response, String.format("http://localhost:3000/?token=%s", accessToken));
     }
 
 
