@@ -1,7 +1,10 @@
 package com.likelion.news.controller;
 
 import com.likelion.news.dto.ExpertRequest;
+import com.likelion.news.dto.UserInfoDto;
 import com.likelion.news.service.ExpertService;
+import com.likelion.news.service.UserService;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import io.jsonwebtoken.lang.Collections;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +30,7 @@ import java.util.Optional;
 public class UserController {
 
     private final ExpertService expertService;
+    private final UserService userService;
 
     @Operation(
             summary = "카카오 로그인 API",
@@ -52,6 +56,29 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @Operation(
+            summary = "유저 정보 API",
+            description = "유저 정보 API입니다. 해당 유저의 이름, 닉네임, 이메일을 조회합니다."
+    )
+    @GetMapping(value="/userInfo")
+    public UserInfoDto getUserInfo(){
+        String uid = getUid().get();
+        return userService.getUserInfo(uid);
+    }
+
+    @Operation(
+            summary = "유저 닉네임 변경 API",
+            description = "유저 닉네임 변경 API입니다. 해당 유저의 닉네임을 변경합니다."
+    )
+    @PatchMapping(value="/nickname")
+    public ResponseEntity<Void> editUserNickname(String nickname){
+        String uid = getUid().get();
+        userService.editUserNickname(uid, nickname);
+        return ResponseEntity.ok().build();
+    }
+
+
 
     /**
      * @author minseok kim
