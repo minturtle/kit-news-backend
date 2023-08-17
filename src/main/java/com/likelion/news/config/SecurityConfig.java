@@ -6,6 +6,7 @@ import com.likelion.news.service.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -32,6 +33,7 @@ public class SecurityConfig {
                 .cors(cors-> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests((authorizeHttpRequest)->{
                     authorizeHttpRequest
+                            .requestMatchers(HttpMethod.OPTIONS, "/**/*").permitAll()
                             .requestMatchers("/api/login/**").permitAll()
                             .requestMatchers("/v3/api-docs/**", "/swagger-ui/**" ).permitAll()
                             .requestMatchers("/api/admin/**").hasRole("ADMIN")
