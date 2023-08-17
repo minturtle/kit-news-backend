@@ -71,7 +71,7 @@ public class UserController {
             summary = "유저 닉네임 변경 API",
             description = "유저 닉네임 변경 API입니다. 해당 유저의 닉네임을 변경합니다."
     )
-    @PatchMapping(value="/nickname")
+    @PostMapping(value="/nickname")
     public ResponseEntity<Void> editUserNickname(String nickname){
         String uid = getUid().get();
         userService.editUserNickname(uid, nickname);
