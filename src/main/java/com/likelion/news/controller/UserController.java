@@ -61,7 +61,7 @@ public class UserController {
             summary = "유저 정보 API",
             description = "유저 정보 API입니다. 해당 유저의 이름, 닉네임, 이메일을 조회합니다."
     )
-    @GetMapping(value="/userInfo")
+    @GetMapping(value="/user-info")
     public UserInfoDto getUserInfo(){
         String uid = getUid().get();
         return userService.getUserInfo(uid);
