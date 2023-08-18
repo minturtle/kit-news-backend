@@ -15,4 +15,7 @@ public interface ExpertInfoRepository extends CrudRepository<ExpertInfo, Long> {
 
     @Query("SELECT e FROM ExpertInfo e WHERE e.user.uid = :uid")
     Optional<ExpertInfo> findByUserUid(String uid);
+
+    @Query("SELECT e FROM ExpertInfo e WHERE e.user.uid = :uid")
+    Optional<ExpertInfo> deleteAllByUserUid(String uid);
 }
