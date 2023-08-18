@@ -21,6 +21,8 @@ public class CommentDto {
 
     private String expertName;
 
+    private String expertNickname;
+
     private List<CommentEmotionDto> commentEmotions;
 
     private String content;
@@ -33,6 +35,7 @@ public class CommentDto {
                 .expertUid(expert.getUid())
                 .expertProfileImage(expert.getProfileImage())
                 .expertName(expert.getName())
+                .expertNickname(expert.getNickname())
                 .content(entity.getContent())
                 .commentEmotions(entity.getCommentEmotions().stream().map(CommentEmotionDto::toDto).toList())
                 .build();
