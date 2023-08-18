@@ -2,6 +2,7 @@ package com.likelion.news.controller;
 
 
 import com.likelion.news.dto.*;
+import com.likelion.news.dto.request.enums.ArticleCategoryRequest;
 import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.enums.CommentEmotionType;
 import com.likelion.news.entity.enums.EmotionClass;
@@ -19,7 +20,6 @@ import com.likelion.news.service.NewsClippingService;
 import com.likelion.news.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -70,13 +70,13 @@ public class NewsController {
     @Operation(
             summary = "뉴스 리스트 조회 API",
             description = "요약까지 완료된 뉴스 리스트를 가져오는 API입니다. 뉴스의 카테고리 별로 검색이 가능하며, from, size의 디폴트 값은 각각 0, 10입니다.")
-    @GetMapping("/list/{articleCategory}")
+    @GetMapping("/list/{articleCategoryReq}")
     public ApiResponse<List<NewsResponse>> getNewsList(
             @RequestParam(required = false, defaultValue = "0")  @Positive Integer from,
             @RequestParam(required = false, defaultValue = "10") @Positive Integer size,
-            @PathVariable(required = false) ArticleCategory articleCategory
+            @PathVariable ArticleCategoryRequest articleCategoryReq
     ){
-        if(articleCategory == null){
+        if(articleCategoryReq == ArticleCategoryRequest.ALL){
             final List<NewsResponse> result = newsService.getAllNews(from, size)
                     .stream().map(news -> NewsResponse.builder()
                             .newsId(news.getId())
@@ -94,6 +94,8 @@ public class NewsController {
                     .build();
         }
 
+
+        final ArticleCategory articleCategory = ArticleCategory.valueOf(articleCategoryReq.name());
 
         List<NewsResponse> result = newsService.getNewsByCategory(from, size, articleCategory)
                 .stream().map(news -> NewsResponse.builder()
