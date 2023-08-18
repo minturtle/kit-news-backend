@@ -58,6 +58,32 @@ public class UserController {
     }
 
     @Operation(
+            summary = "전문가 신청 수정 API",
+            description = "전문가 신청 수정 API 입니다. 로그인이 되어 있고 전문가 신청을 한 상태여야 합니다."
+    )
+    @PutMapping(value = "/register/expert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> editExpert(ExpertRequest req,
+                                               @RequestPart(value = "images", required = false) MultipartFile[] images) throws IOException {
+        String uid = getUid().get();
+        List<MultipartFile> imageList = Collections.arrayToList(images);
+        expertService.editExpert(uid, req, imageList);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "전문가 신청 삭제 API",
+            description = "전문가 신청 삭제 API 입니다. 로그인이 되어 있고 전문가 신청을 한 상태여야 합니다."
+    )
+    @DeleteMapping(value="/register/expert")
+    public ResponseEntity<Void> deleteExpert(){
+        String uid = getUid().get();
+        expertService.deleteExpert(uid);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
             summary = "유저 정보 API",
             description = "유저 정보 API입니다. 해당 유저의 이름, 닉네임, 이메일을 조회합니다."
     )
