@@ -74,8 +74,26 @@ public class NewsController {
     public ApiResponse<List<NewsResponse>> getNewsList(
             @RequestParam(required = false, defaultValue = "0")  @Positive Integer from,
             @RequestParam(required = false, defaultValue = "10") @Positive Integer size,
-            @PathVariable ArticleCategory articleCategory
+            @PathVariable(required = false) ArticleCategory articleCategory
     ){
+        if(articleCategory == null){
+            final List<NewsResponse> result = newsService.getAllNews(from, size)
+                    .stream().map(news -> NewsResponse.builder()
+                            .newsId(news.getId())
+                            .link(news.getLink())
+                            .title(news.getTitle())
+                            .content(news.getContent())
+                            .summary(news.getSummary())
+                            .articleCategory(news.getArticleCategory())
+                            .build()
+                    ).toList();
+
+
+            return ApiResponse.<List<NewsResponse>>builder()
+                    .data(result)
+                    .build();
+        }
+
 
         List<NewsResponse> result = newsService.getNewsByCategory(from, size, articleCategory)
                 .stream().map(news -> NewsResponse.builder()
