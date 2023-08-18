@@ -74,7 +74,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .loginType(loginType)
                     .kakaoUid(oAuth2UserInfo.getKakaoUid())
                     .email(oAuth2UserInfo.getEmail())
-                    .nickname(null)
+                    .nickname(oAuth2UserInfo.getName())
                     .uid(NanoIdProvider.randomNanoId())
                     .userType(UserType.ROLE_ADMIN)
                     .build();
