@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -45,6 +42,13 @@ public class NewsService {
         List<RefinedNews> findNewsList = refinedNewsRepository.findAllByArticleSummary(category, PageRequest.of(from / size, size, Sort.by("refinedNewsId").descending()));
 
         return findNewsList.stream().map(RefinedNewsReadDto::toDto).toList();
+
+    }
+
+
+    public List<RefinedNewsReadDto> getAllNews(Integer from, Integer size) {
+
+        return refinedNewsRepository.findAll(PageRequest.of(from / size, size)).stream().map(RefinedNewsReadDto::toDto).toList();
 
     }
 
@@ -220,6 +224,5 @@ public class NewsService {
         }
         return randomNumbers;
     }
-
 
 }
