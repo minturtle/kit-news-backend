@@ -74,8 +74,6 @@ public class AdminService {
     private void handleDecision(ExpertState newState, ExpertInfo findExpertReq) {
         if (newState.equals(ExpertState.APPROVED)) {
             findExpertReq.getUser().setUserType(UserType.ROLE_EXPERT);
-        } else {
-            expertInfoRepository.delete(findExpertReq); // 일단 거절하면 처음부터 하자 해서 상태 안바꾸고 그냥 신청정보 삭제
         }
     }
 
