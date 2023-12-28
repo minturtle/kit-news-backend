@@ -2,6 +2,7 @@ package com.likelion.news.controller;
 
 
 import com.likelion.news.dto.*;
+import com.likelion.news.dto.request.enums.ArticleCategoryRequest;
 import com.likelion.news.entity.CrawledNews;
 import com.likelion.news.entity.enums.CommentEmotionType;
 import com.likelion.news.entity.enums.EmotionClass;
@@ -19,7 +20,6 @@ import com.likelion.news.service.NewsClippingService;
 import com.likelion.news.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -70,12 +70,32 @@ public class NewsController {
     @Operation(
             summary = "뉴스 리스트 조회 API",
             description = "요약까지 완료된 뉴스 리스트를 가져오는 API입니다. 뉴스의 카테고리 별로 검색이 가능하며, from, size의 디폴트 값은 각각 0, 10입니다.")
-    @GetMapping("/list/{articleCategory}")
+    @GetMapping("/list/{articleCategoryReq}")
     public ApiResponse<List<NewsResponse>> getNewsList(
             @RequestParam(required = false, defaultValue = "0")  @Positive Integer from,
             @RequestParam(required = false, defaultValue = "10") @Positive Integer size,
-            @PathVariable ArticleCategory articleCategory
+            @PathVariable ArticleCategoryRequest articleCategoryReq
     ){
+        if(articleCategoryReq == ArticleCategoryRequest.ALL){
+            final List<NewsResponse> result = newsService.getAllNews(from, size)
+                    .stream().map(news -> NewsResponse.builder()
+                            .newsId(news.getId())
+                            .link(news.getLink())
+                            .title(news.getTitle())
+                            .content(news.getContent())
+                            .summary(news.getSummary())
+                            .articleCategory(news.getArticleCategory())
+                            .build()
+                    ).toList();
+
+
+            return ApiResponse.<List<NewsResponse>>builder()
+                    .data(result)
+                    .build();
+        }
+
+
+        final ArticleCategory articleCategory = ArticleCategory.valueOf(articleCategoryReq.name());
 
         List<NewsResponse> result = newsService.getNewsByCategory(from, size, articleCategory)
                 .stream().map(news -> NewsResponse.builder()
@@ -138,7 +158,7 @@ public class NewsController {
             summary = "뉴스의 전문가 댓글을 수정하는 API",
             description = "전문가 댓글을 수정하는 API입니다. news의 ID값과 댓글의 Id값이 필요합니다." +
                     "사용자가 전문가 or 어드민이어야 하고, 본인이 작성한 댓글이어야합니다. ")
-    @PatchMapping(value="/{newsId}/comment/{commentId}")
+    @PostMapping(value="/{newsId}/comment/{commentId}")
     public ResponseEntity<Void> updateComment(ExpertCommentDto comment,
                                               @PathVariable Long newsId,
                                               @PathVariable Long commentId){

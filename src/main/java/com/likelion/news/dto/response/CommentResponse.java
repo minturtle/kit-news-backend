@@ -24,6 +24,8 @@ public class CommentResponse{
 
     private String expertName;
 
+    private String expertNickname;
+
     @Builder.Default
     private Map<CommentEmotionType, Integer> emotionCounts = new HashMap<>();
 
@@ -40,6 +42,7 @@ public class CommentResponse{
                 .expertProfileImage(comment.getExpertProfileImage())
                 .content(comment.getContent())
                 .expertName(comment.getExpertName())
+                .expertNickname(comment.getExpertNickname())
                 .userEmotionInfo(userEmotionInfo)
                 .build();
 

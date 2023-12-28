@@ -1,7 +1,10 @@
 package com.likelion.news.controller;
 
 import com.likelion.news.dto.ExpertRequest;
+import com.likelion.news.dto.UserInfoDto;
 import com.likelion.news.service.ExpertService;
+import com.likelion.news.service.UserService;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import io.jsonwebtoken.lang.Collections;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +30,7 @@ import java.util.Optional;
 public class UserController {
 
     private final ExpertService expertService;
+    private final UserService userService;
 
     @Operation(
             summary = "카카오 로그인 API",
@@ -52,6 +56,55 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @Operation(
+            summary = "전문가 신청 수정 API",
+            description = "전문가 신청 수정 API 입니다. 로그인이 되어 있고 전문가 신청을 한 상태여야 합니다."
+    )
+    @PutMapping(value = "/register/expert", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> editExpert(ExpertRequest req,
+                                               @RequestPart(value = "images", required = false) MultipartFile[] images) throws IOException {
+        String uid = getUid().get();
+        List<MultipartFile> imageList = Collections.arrayToList(images);
+        expertService.editExpert(uid, req, imageList);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "전문가 신청 삭제 API",
+            description = "전문가 신청 삭제 API 입니다. 로그인이 되어 있고 전문가 신청을 한 상태여야 합니다."
+    )
+    @DeleteMapping(value="/register/expert")
+    public ResponseEntity<Void> deleteExpert(){
+        String uid = getUid().get();
+        expertService.deleteExpert(uid);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @Operation(
+            summary = "유저 정보 API",
+            description = "유저 정보 API입니다. 해당 유저의 이름, 닉네임, 이메일을 조회합니다."
+    )
+    @GetMapping(value="/user-info")
+    public UserInfoDto getUserInfo(){
+        String uid = getUid().get();
+        return userService.getUserInfo(uid);
+    }
+
+    @Operation(
+            summary = "유저 닉네임 변경 API",
+            description = "유저 닉네임 변경 API입니다. 해당 유저의 닉네임을 변경합니다."
+    )
+    @PostMapping(value="/nickname")
+    public ResponseEntity<Void> editUserNickname(String nickname){
+        String uid = getUid().get();
+        userService.editUserNickname(uid, nickname);
+        return ResponseEntity.ok().build();
+    }
+
+
 
     /**
      * @author minseok kim

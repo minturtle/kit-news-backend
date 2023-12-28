@@ -34,7 +34,7 @@ public class AdminController {
             description = "어드민 페이지에서 사용하는 전문가 신청 승인/거절 API입니다. " +
                     "uid는 전문가 신청을 한 유저의 uid이고, decision에는 approve/reject 값을 넣어주시면 됩니다."
     )
-    @PatchMapping("requested/{uid}/{decision}")
+    @PostMapping("requested/{uid}/{decision}")
     public ResponseEntity<String> decisionRegistrations(@PathVariable String decision,
                                                         @PathVariable String uid) {
         boolean isApproved = adminService.decisionRegistrations(decision, uid);

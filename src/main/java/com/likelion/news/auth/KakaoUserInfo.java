@@ -7,9 +7,17 @@ import java.util.Collection;
 import java.util.Map;
 
 @AllArgsConstructor
-public class KakaoUserInfo implements OAuth2UserInfo {
+public class KakaoUserInfo implements OAuth2UserInfo{
 
     private Map<String, Object> attributes;
+    private Map<String, Object> attributesProperties;
+    private Map<String, Object> attributesAccount;
+
+    public KakaoUserInfo(Map<String,Object> attributes){
+        this.attributes = attributes;
+        this.attributesProperties = (Map<String, Object>) attributes.get("properties");
+        this.attributesAccount = (Map<String, Object>) attributes.get("kakao_account");
+    }
 
 
     @Override
@@ -18,15 +26,15 @@ public class KakaoUserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getName() {
-        // kakao_account라는 Map에서 추출
-        return (String) ((Map) attributes.get("properties")).get("nickname");
+    public String getEmail() {
+        return (String) attributesAccount.get("email");
     }
 
     @Override
-    public String getProfileImage(){
-        return (String) ((Map) attributes.get("properties")).get("profile_image");
-    }
+    public String getName() {return (String) attributesProperties.get("nickname"); }
+
+    @Override
+    public String getProfileImage(){return (String) attributesProperties.get("profile_image"); }
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -37,5 +45,4 @@ public class KakaoUserInfo implements OAuth2UserInfo {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
-
 }

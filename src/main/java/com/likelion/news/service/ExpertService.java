@@ -5,6 +5,8 @@ import com.likelion.news.dto.ExpertRequest;
 import com.likelion.news.entity.*;
 import com.likelion.news.entity.enums.ExpertState;
 import com.likelion.news.entity.enums.UserType;
+import com.likelion.news.exception.DuplicateException;
+import com.likelion.news.exception.NotFoundException.NoExpertException;
 import com.likelion.news.exception.NotFoundException.NoNewsException;
 import com.likelion.news.exception.NotFoundException.NoUserException;
 import com.likelion.news.exception.NotFoundException.NoCommentException;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -44,6 +47,12 @@ public class ExpertService {
      */
     public void registerExpert(String uid, ExpertRequest req, List<MultipartFile> images) throws IOException {
         User findUser = userRepository.findUserByUid(uid).orElseThrow(NoUserException::new);
+
+        Optional<ExpertInfo> duplicateExpert = expertInfoRepository.findByUserUid(uid);
+        if (duplicateExpert.isPresent()){
+            throw new DuplicateException.DuplicateExpertInfoException();
+        }
+
         ExpertInfo expertInfo = ExpertInfo.builder()
                 .user(findUser)
                 .job(req.getJob())
@@ -58,6 +67,36 @@ public class ExpertService {
         expertInfoRepository.save(expertInfo);
         certificationRepository.saveAll(certificationLinks);
 
+    }
+
+    /*
+     * @methodName: editExpert
+     * @author: parkjunha
+     * @description:
+     *
+     * @param: String 사용자 uid
+     * @param: ExpertRequest 전문가 정보
+     * @param: List<MultipartFile> 증명서 이미지들
+     * @return: void
+     */
+    public void editExpert(String uid, ExpertRequest req, List<MultipartFile> images) throws IOException {
+        ExpertInfo findExpertInfo = expertInfoRepository.findByUserUid(uid).orElseThrow(NoExpertException::new);
+        certificationRepository.deleteAllByExpertInfo(findExpertInfo);
+
+        findExpertInfo.setJob(req.getJob());
+        findExpertInfo.setBusinessType(req.getBusinessType());
+        findExpertInfo.setCompany(req.getCompany());
+        findExpertInfo.setEducation(req.getEducation());
+
+        List<Certification> certificationLinks = createCertificationLinks(images, findExpertInfo);
+
+        certificationRepository.saveAll(certificationLinks);
+
+    }
+
+    public void deleteExpert(String uid) {
+        ExpertInfo findExpertInfo = expertInfoRepository.findByUserUid(uid).orElseThrow(NoExpertException::new);
+        expertInfoRepository.deleteById(findExpertInfo.getExpertInfoId());
     }
 
     /*
