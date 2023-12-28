@@ -28,7 +28,7 @@ public class CrawledNews {
     private String articleTitle;
     private String articleContent;
     private String articleLink;
-
+    private String uid;
     @OneToMany(mappedBy = "crawledNews", cascade = CascadeType.REMOVE)
     private List<RefinedNews> refinedNewsList;
 
