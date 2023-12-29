@@ -21,6 +21,7 @@ import com.likelion.news.service.NewsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +73,7 @@ public class NewsController {
             description = "요약까지 완료된 뉴스 리스트를 가져오는 API입니다. 뉴스의 카테고리 별로 검색이 가능하며, from, size의 디폴트 값은 각각 0, 10입니다.")
     @GetMapping("/list/{articleCategoryReq}")
     public ApiResponse<List<NewsResponse>> getNewsList(
-            @RequestParam(required = false, defaultValue = "0")  @Positive Integer from,
+            @RequestParam(required = false, defaultValue = "0")  @PositiveOrZero Integer from,
             @RequestParam(required = false, defaultValue = "10") @Positive Integer size,
             @PathVariable ArticleCategoryRequest articleCategoryReq
     ){
@@ -95,7 +96,7 @@ public class NewsController {
         }
 
 
-        final ArticleCategory articleCategory = ArticleCategory.valueOf(articleCategoryReq.name());
+        final ArticleCategory articleCategory = ArticleCategory.valueOf(articleCategoryReq.toString());
 
         List<NewsResponse> result = newsService.getNewsByCategory(from, size, articleCategory)
                 .stream().map(news -> NewsResponse.builder()

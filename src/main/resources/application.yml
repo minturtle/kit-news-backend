@@ -10,6 +10,8 @@ spring:
       hibernate:
         show_sql: false
         format_sql: true
+    hibernate:
+      ddl-auto: validate
 logging:
   level:
     org:
@@ -27,12 +29,9 @@ clova:
     minimum-content-size: 1000
     maximum-content-size: 2000
 
-crawler:
-  shell:
-    execute-command: python3
-    args:
-      /app/python_files/crawl.py
-
+proxy:
+  server:
+    domain: http://localhost:3000
 oauth2:
   client:
     registration:

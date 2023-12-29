@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -29,6 +30,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+
+    @Value("${proxy.server.domain}")
+    private String proxyServer;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -57,7 +63,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         response.setHeader(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(resBody));
 
-        getRedirectStrategy().sendRedirect(request, response, String.format("/callback?token=%s", accessToken));
+        getRedirectStrategy().sendRedirect(request, response, String.format("%s/callback?token=%s", proxyServer, accessToken));
     }
 
 

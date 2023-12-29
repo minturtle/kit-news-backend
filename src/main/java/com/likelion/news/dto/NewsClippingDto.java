@@ -19,7 +19,7 @@ public class NewsClippingDto {
 
     public static NewsClippingDto toDto(NewsClipping entity){
         return NewsClippingDto.builder()
-                .clipId(entity.getId())
+                .clipId(entity.getNewsClippingId())
                 .newsId(entity.getClippedNews().getRefinedNewsId())
                 .title(entity.getClippedNews().getCrawledNews().getArticleTitle())
                 .summary(entity.getClippedNews().getArticleSummary())
