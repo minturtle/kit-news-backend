@@ -2,16 +2,14 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     #/<IP>:<PORT>/<DB NAME>?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    url: ${spring.datasource.url}
+    url: jdbc:mysql://localhost:3306/news?serverTimezone=Asia/Seoul
     username: ${spring.datasource.username}
     password: ${spring.datasource.password}
   jpa:
     properties:
       hibernate:
-        show_sql: false
+        show_sql: true
         format_sql: true
-    hibernate:
-      ddl-auto: validate
 logging:
   level:
     org:
@@ -29,19 +27,21 @@ clova:
     minimum-content-size: 1000
     maximum-content-size: 2000
 
-proxy:
-  server:
-    domain: http://localhost:3000
+crawler:
+  shell:
+    execute-command: python
+    args:
+      crawl.py
+
 oauth2:
   client:
     registration:
       kakao:
         client-id: ${spring.security.oauth2.client.registration.kakao.client-id}
-        #            client-secret: ${spring.security.oauth2.client.registration.kakao.client-secret} # 왠지 모르지만 secret을 사용하면 customOauth2Service로 안넘어감
+        client-secret: ${spring.security.oauth2.client.registration.kakao.client-secret}
         scope:
           - profile_nickname
           - profile_image
-          - account_email
         client-name: Kakao
         authorization-grant-type: ${spring.security.oauth2.client.registration.kakao.authorization-grant-type}
         client-authentication-method: client_secret_post # 이것도 Post가 아니라 client_secret_post Spring security 5.6 이후
@@ -53,12 +53,8 @@ oauth2:
           user-info-uri: ${spring.security.oauth2.client.provider.kakao.user-info-uri}
           user-name-attribute: ${spring.security.oauth2.client.provider.kakao.user-name-attribute}
 
-cloud:
-  aws:
-    s3:
-      bucket: ${cloud.aws.s3.bucket}
-      stack.auto: false
-      region.static: ${cloud.aws.region.static}
-      credentials:
-        accessKey: ${cloud.aws.credentials.access-key}
-        secretKey: ${cloud.aws.credentials.secret-key}
+
+jwt:
+  secret: ${jwt.secret}
+  access-token-expire-time: ${jwt.access-token-expire-time}
+  refresh-token-expire-time: ${jwt.refresh-token-expire-time}
