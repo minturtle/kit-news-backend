@@ -2,7 +2,6 @@ package com.likelion.news.config;
 
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -31,13 +30,11 @@ public class OAuth2Config {
     private final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
 
     @Bean
-    @ConditionalOnMissingBean(ClientRegistrationRepository.class)
-    public ClientRegistrationRepository clientRegistrationRepository() {
-        System.out.println("NEW CLIENTREGISTRATION");
-        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
+    public ClientRegistrationRepository kakaoClientRegistrationRepository() {
+        return new InMemoryClientRegistrationRepository(this.kakaoClientRegistration());
     }
 
-    private ClientRegistration googleClientRegistration() {
+    private ClientRegistration kakaoClientRegistration() {
         return ClientRegistration.withRegistrationId("kakao")
                 .clientId(KAKAO_CLIENT_ID)
                 .clientSecret(KAKAO_CLIENT_SECRET)

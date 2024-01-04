@@ -32,7 +32,9 @@ crawler:
     execute-command: python
     args:
       crawl.py
-
+proxy:
+  server:
+    domain: http://localhost:3000
 oauth2:
   client:
     registration:
